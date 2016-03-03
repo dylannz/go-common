@@ -41,7 +41,7 @@ func InitConnection() {
 	conn = db.Conn
 
 	if UseORM {
-		InitORM()
+		ormOnce.Do(InitORM)
 	}
 }
 
@@ -53,6 +53,7 @@ func SetConnection(db *sql.DB) {
 	conn = db
 
 	if UseORM {
+		ormOnce.Do(func() {})
 		SetORMConnection(db)
 	}
 }

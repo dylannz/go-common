@@ -2,6 +2,7 @@ package db
 
 import (
 	"database/sql"
+	"sync"
 
 	"github.com/HomesNZ/go-common/env"
 	"github.com/jinzhu/gorm"
@@ -13,6 +14,9 @@ var (
 
 	// orm is the Gorm wrapped current database connection
 	orm *gorm.DB
+
+	// ormOnce guards InitORM from running more than once
+	ormOnce = sync.Once{}
 )
 
 // InitORM initializes the ORM connection from the existing connection.
@@ -34,7 +38,10 @@ func InitORM() {
 
 // ORM is the gorm wrapped SQL database connection. If the connection is nil, it will be initialized.
 func ORM() *gorm.DB {
+	UseORM = true
+
 	once.Do(InitConnection)
+	ormOnce.Do(InitORM)
 	return orm
 }
 
