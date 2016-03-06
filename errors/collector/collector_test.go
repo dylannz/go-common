@@ -23,8 +23,20 @@ var _ = Describe("Collector", func() {
 			})
 		})
 
-		Context("when any errors were collected", func() {
+		Context("when nil errors have been collected", func() {
 			It("returns nil", func() {
+				c := New()
+				c.Collect(nil)
+				c.Collect(nil)
+
+				actual := c.Errors()
+
+				Expect(actual).To(BeNil())
+			})
+		})
+
+		Context("when any errors were collected", func() {
+			It("returns a Errors error with the collected errors", func() {
 				c := New()
 				c.Collect(err1)
 				c.Collect(err2)
