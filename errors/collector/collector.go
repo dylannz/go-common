@@ -24,6 +24,10 @@ func New() Collector {
 
 // Collect appends a new error to the errors slice.
 func (c *Collector) Collect(err error) {
+	if err == nil {
+		return
+	}
+
 	c.lock.Lock()
 	defer c.lock.Unlock()
 
