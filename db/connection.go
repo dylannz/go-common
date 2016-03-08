@@ -66,7 +66,9 @@ type PG struct {
 
 // Conn is the SQL database connection accessor. If the connection is nil, it will be initialized.
 func Conn() *sql.DB {
-	once.Do(InitConnection)
+	if conn == nil {
+		once.Do(InitConnection)
+	}
 	return conn
 }
 
