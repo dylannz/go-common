@@ -21,9 +21,7 @@ var (
 
 // InitORM initializes the ORM connection from the existing connection.
 func InitORM() {
-	once.Do(InitConnection)
-
-	g, err := gorm.Open("postgres", conn)
+	g, err := gorm.Open("postgres", Conn())
 	if err != nil {
 		// This shouldnt happen unless our DB settings are malformed?
 		panic(err)
