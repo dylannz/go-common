@@ -1,5 +1,6 @@
 package codederror
 
+// 100-199 reserved for general validation errors
 const (
 	// CodeErrInvalidField is a generic error for an invalid JSON field.
 	CodeErrInvalidField = iota + 100
@@ -9,6 +10,9 @@ const (
 
 	// CodeErrFieldEmpty is an error code for empty JSON fields.
 	CodeErrFieldEmpty
+
+	// CodeErrInvalidJWTToken is a generic error for an invalid JWT token.
+	CodeErrInvalidJWTToken
 )
 
 // 200-299 reserved for homes-api service
