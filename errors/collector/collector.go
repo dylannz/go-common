@@ -44,6 +44,15 @@ func (c Collector) Errors() []error {
 	return nil
 }
 
+// Any returns the Collector if there are any error or returns nil.
+func (c Collector) Any() *Collector {
+	if len(c.errs) == 0 {
+		return nil
+	}
+
+	return &c
+}
+
 // Error satisfies the error interface by returning String()
 func (c Collector) Error() string {
 	return c.String()
