@@ -44,7 +44,12 @@ func (c Collector) Errors() []error {
 	return nil
 }
 
-// Error satisfies the error interface by returning an error string, which is the concatenation of all errors
+// Error satisfies the error interface by returning String()
+func (c Collector) Error() string {
+	return c.String()
+}
+
+// String satisfies fmt.Stringer by returning an error string, which is the concatenation of all errors
 func (c Collector) String() string {
 	// Return early with an empty string if we have no errors.
 	if len(c.errs) == 0 {
