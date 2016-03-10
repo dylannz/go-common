@@ -46,20 +46,18 @@ var _ = Describe("Collector", func() {
 					err2,
 				}
 
-				actual := c.Errors().(Errors)
-
-				Expect(actual.Errors).To(Equal(expected))
+				Expect(c.Errors()).To(Equal(expected))
 			})
 		})
 	})
 
-	Describe("#String", func() {
+	Describe("#String (fmt.Stringer)", func() {
 		Context("when no errors have been collected", func() {
-			It("returns `<nil>`", func() {
+			It("returns an empty string", func() {
 				c := New()
 
-				actual := fmt.Sprint(c.Errors())
-				expected := "<nil>"
+				actual := fmt.Sprint(c)
+				expected := ""
 
 				Expect(actual).To(Equal(expected))
 			})
@@ -71,7 +69,7 @@ var _ = Describe("Collector", func() {
 				c.Collect(err1)
 				c.Collect(err2)
 
-				actual := fmt.Sprint(c.Errors())
+				actual := fmt.Sprint(c)
 				expected := fmt.Sprintf("%s; %s", err1, err2)
 
 				Expect(actual).To(Equal(expected))
