@@ -24,6 +24,9 @@ const (
 
 	// CodeErrUnknownEmail is an error code for when the email is not for a registered User.
 	CodeErrUnknownEmail
+
+	// CodeErrUnknownID is an error code for when a User's ID is not found in the database.
+	CodeErrUnknownID
 )
 
 // 400-499 reserved for data-import service
