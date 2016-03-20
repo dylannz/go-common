@@ -22,7 +22,7 @@ const (
 	// CodeErrInvalidCredentials is an error code for when the users email and password do not match.
 	CodeErrInvalidCredentials = iota + 300
 
-	// CodeErrUnknownEmail is an erorr code for when the email is not for a registered User.
+	// CodeErrUnknownEmail is an error code for when the email is not for a registered User.
 	CodeErrUnknownEmail
 )
 
