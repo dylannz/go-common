@@ -31,7 +31,7 @@ func InitORM() {
 		g.LogMode(true)
 	}
 
-	orm = &g
+	orm = g
 }
 
 // ORM is the gorm wrapped SQL database connection. If the connection is nil, it will be initialized.
@@ -51,5 +51,5 @@ func SetORMConnection(db *sql.DB) {
 		panic(err)
 	}
 
-	orm = &g
+	orm = g
 }
