@@ -15,7 +15,7 @@ var (
 	Version = unknown
 
 	// runCmd is the command to run so the version number is correctly provided to the service.
-	runCmd = "go run -ldflags \"-X github.com/HomesNZ/go-common/version.Version `git rev-parse HEAD`\" main.go"
+	runCmd = "go run -ldflags \"-X github.com/HomesNZ/go-common/version.Version=`git rev-parse HEAD`\" main.go"
 )
 
 // Log logs the version number.
