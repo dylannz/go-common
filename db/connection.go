@@ -119,7 +119,7 @@ func (db PG) connectionString() string {
 		password = ":" + password
 	}
 
-	return fmt.Sprintf(
+	connString := fmt.Sprintf(
 		"postgres://%s%s@%s:%s/%s?sslmode=%s",
 		env.GetString("DB_USER", "postgres"),
 		password,
@@ -128,6 +128,12 @@ func (db PG) connectionString() string {
 		env.MustGetString("DB_NAME"),
 		env.GetString("DB_SSL_MODE", "disable"),
 	)
+
+	searchPath := env.GetString("DB_SEARCH_PATH", "")
+	if len(searchPath) > 0 {
+		connString = fmt.Sprintf("%s&search_path=%s", connString, searchPath)
+	}
+	return connString
 }
 
 // logSafeConnectionString is the database connection string with the password replace with `****` so it can be logged

@@ -15,6 +15,31 @@ var _ = Describe("PG", func() {
 		os.Setenv("DB_PORT", "5432")
 		os.Setenv("DB_PASSWORD", "password")
 		os.Setenv("DB_SSL_MODE", "disable")
+		os.Setenv("DB_SEARCH_PATH", "public")
+
+		Context("when there is a search path", func() {
+			It("adds the search_path parameter", func() {
+				db := PG{}
+
+				actual := db.logSafeConnectionString()
+				expected := "postgres://user:****@host:5432/test?sslmode=disable&search_path=public"
+
+				Expect(actual).To(Equal(expected))
+			})
+		})
+
+		Context("when there is no search path", func() {
+			It("leaves the connection string as is", func() {
+				os.Setenv("DB_SEARCH_PATH", "")
+
+				db := PG{}
+
+				actual := db.logSafeConnectionString()
+				expected := "postgres://user:****@host:5432/test?sslmode=disable"
+
+				Expect(actual).To(Equal(expected))
+			})
+		})
 
 		Context("when there is a password", func() {
 			It("replaces the password with stars", func() {
