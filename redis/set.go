@@ -13,8 +13,8 @@ func (c Cache) Set(key, val string) error {
 	return nil
 }
 
-// SetEx adds a new key value pair to the redis cache with expire time in seconds
-func (c Cache) SetEx(key, val string, expireTime int) error {
+// SetExpiry adds a new key value pair to the redis cache with expire time in seconds
+func (c Cache) SetExpiry(key, val string, expireTime int) error {
 	conn := c.Conn()
 	defer conn.Close()
 
