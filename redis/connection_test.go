@@ -1,12 +1,13 @@
 package redis_test
 
 import (
-	. "github.com/HomesNZ/data-import/cache/redis"
+	. "github.com/HomesNZ/go-common/redis"
 	"github.com/rafaeljusto/redigomock"
 
 	"github.com/garyburd/redigo/redis"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	"time"
 )
 
 var _ = Describe("Redis", func() {
@@ -40,6 +41,20 @@ var _ = Describe("Redis", func() {
 				mock.Close()
 				Expect(err).NotTo(HaveOccurred())
 			})
+		})
+	})
+
+	Describe(".Subscribe", func() {
+		It("Outputs the expected key", func() {
+			c := CacheConn()
+
+			go c.Subscribe("*:test", func(value string) {
+				Expect(value).To(Equal("name:test"))
+			})
+
+			c.SetExpiry("name:test", "value", 1)
+			time.Sleep(2)
+
 		})
 	})
 })
