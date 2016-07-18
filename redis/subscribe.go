@@ -16,10 +16,9 @@ func (c Cache) Subscribe(subscription string, handleResponse func(interface{}) )
 	_, err := conn.Do("PSUBSCRIBE", subscription)
 	if err != nil {
 		logrus.Error(err)
-		return
 	}
 
-	for {
+	for err == nil {
 		reply, err := conn.Receive()
 		if err != nil {
 			logrus.Error(err)
