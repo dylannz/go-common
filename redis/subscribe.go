@@ -2,6 +2,7 @@ package redis
 
 import (
 	"fmt"
+	"github.com/Sirupsen/logrus"
 )
 
 // Subscribe creates a subscription to the redis publishing system
@@ -14,13 +15,14 @@ func (c Cache) Subscribe(subscription string, handleResponse func(interface{}) )
 
 	_, err := conn.Do("PSUBSCRIBE", subscription)
 	if err != nil {
-		fmt.Println(err)
+		logrus.Error(err)
+		return
 	}
 
 	for {
 		reply, err := conn.Receive()
 		if err != nil {
-			fmt.Println(err)
+			logrus.Error(err)
 		}
 
 		handleResponse(reply)
