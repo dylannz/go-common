@@ -2,14 +2,13 @@ package redis
 
 import (
 	"fmt"
-	"github.com/garyburd/redigo/redis"
 )
 
 // Subscribe creates a subscription to the redis publishing system
 //
 // Messages will be passed into handleResponse.
 // Subscribe will block forever, so a goroutine is recommended
-func (c Cache) Subscribe(subscription string, handleResponse func(string) ) {
+func (c Cache) Subscribe(subscription string, handleResponse func(interface{}) ) {
 	conn := c.Conn()
 	defer conn.Close()
 
@@ -18,13 +17,15 @@ func (c Cache) Subscribe(subscription string, handleResponse func(string) ) {
 		fmt.Println(err)
 	}
 
+	fmt.Println("Subscribe loop")
 	for {
-		reply, err := redis.Strings(conn.Receive())
+		reply, err := conn.Receive()
 		if err != nil {
 			fmt.Println(err)
 		}
 
-		//The third element of the reply is the redis message
-		handleResponse(reply[3])
+		handleResponse(reply)
 	}
+	fmt.Println("Subscribe loop")
+
 }
