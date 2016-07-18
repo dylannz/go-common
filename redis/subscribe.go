@@ -5,7 +5,10 @@ import (
 	"github.com/garyburd/redigo/redis"
 )
 
-// Subscribe a
+// Subscribe creates a subscription to the redis publishing system
+//
+// Messages will be passed into handleResponse.
+// Subscribe will block forever, so a goroutine is recommended
 func (c Cache) Subscribe(subscription string, handleResponse func(string) ) {
 	conn := c.Conn()
 	defer conn.Close()
@@ -21,7 +24,7 @@ func (c Cache) Subscribe(subscription string, handleResponse func(string) ) {
 			fmt.Println(err)
 		}
 
-		//The third element of the reply is the actual redis message
+		//The third element of the reply is the redis message
 		handleResponse(reply[3])
 	}
 }
