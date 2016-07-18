@@ -13,9 +13,14 @@ func (c Cache) Delete(key string) (string, error) {
 	reply, err := redis.String(conn.Do("GET", key))
 	if err != nil {
 		logrus.Error(err)
+		return "", err
 	}
 
 	_, err = conn.Do("DEL", key)
+	if err != nil {
+		logrus.Error(err)
+		return "", err
+	}
 
 	return reply, err
 }
