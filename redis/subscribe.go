@@ -17,7 +17,6 @@ func (c Cache) Subscribe(subscription string, handleResponse func(interface{}) )
 		fmt.Println(err)
 	}
 
-	fmt.Println("Subscribe loop")
 	for {
 		reply, err := conn.Receive()
 		if err != nil {
@@ -26,6 +25,4 @@ func (c Cache) Subscribe(subscription string, handleResponse func(interface{}) )
 
 		handleResponse(reply)
 	}
-	fmt.Println("Subscribe loop")
-
 }
