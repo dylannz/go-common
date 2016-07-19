@@ -29,7 +29,7 @@ func (c Cache) SetExpiry(key, val string, expireTime int) error {
 
 	return nil
 }
-
+// SetExpiryTime adds a new key value pair to the redis cache with expire time in time.Time
 func (c Cache) SetExpiryTime (key,val string, expireTime time.Time) error{
 	conn := c.Conn()
 	defer conn.Close()
