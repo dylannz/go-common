@@ -33,6 +33,7 @@ func (c Cache) SetExpiry(key, val string, expireTime int) error {
 func (c Cache) SetExpiryTime (key,val string, expireTime time.Time) error{
 	conn := c.Conn()
 	defer conn.Close()
+	// convert the expiry time into the duration until expiry to conform to redis expectations
 	expire := expireTime.Unix() - time.Now().Unix()
 
 	_, err := conn.Do("SETEX", key, int(expire), val)
