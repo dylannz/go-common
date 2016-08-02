@@ -1,7 +1,7 @@
 package email_test
 
 import (
-	"github.com/HomesNZ/data-import/email"
+	"github.com/HomesNZ/go-common/email"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"net/smtp"

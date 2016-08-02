@@ -48,7 +48,7 @@ var _ = Describe("Redis", func() {
 		It("Outputs the expected key", func() {
 			c := CacheConn()
 
-			go c.Subscribe("*:test", func(value string) {
+			go c.Subscribe("*:test", func(value interface{}) {
 				Expect(value).To(Equal("name:test"))
 			})
 
