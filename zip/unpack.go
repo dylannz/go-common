@@ -12,7 +12,7 @@ import (
 )
 
 // UnpackZIP unpacks the ZIP file at the given path
-func UnpackZIP(dir string) (string, error) {
+func Unpack(dir string) (string, error) {
 	wd, err := os.Getwd()
 	dir = path.Join(wd, dir)
 

@@ -11,11 +11,11 @@ import (
 var _ = Describe("Download", func() {
 	Context("zip archive", func() {
 		It("extracts a zip file", func() {
-			val, err := zip.UnpackZIP("test/Archive.zip")
+			val, err := zip.Unpack("test/Archive.zip")
 			Expect(err).NotTo(HaveOccurred())
 
 			Expect(path.Base(val)).To(Equal("Archive"))
-			
+
 			err = os.RemoveAll(val)
 			Expect(err).NotTo(HaveOccurred())
 		})
