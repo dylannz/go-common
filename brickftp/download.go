@@ -6,6 +6,10 @@ import (
 	"io"
 	"github.com/HomesNZ/go-common/util"
 	"github.com/Sirupsen/logrus"
+	"strings"
+	"archive/zip"
+	"fmt"
+	"path"
 )
 
 const (
@@ -19,6 +23,7 @@ func Download(path string) (string, error) {
 	if err != nil {
 		return "", err
 	}
+	fmt.Println("\t\tCONNECTED")
 
 	src, err := client.Open(path)
 	if err != nil {
@@ -55,4 +60,56 @@ func Download(path string) (string, error) {
 	}
 
 	return dest.Name(), nil
+}
+
+// UnpackZIP unpacks the ZIP file at the given path
+func UnpackZIP(dir string) (string, error) {
+	wd, err := os.Getwd()
+	dir = path.Join(wd, dir)
+
+	reader, err := zip.OpenReader(dir)
+	if err != nil {
+		logrus.WithField("ZIP", "reading the ZIP archive").Error(err)
+		return "", err
+	}
+
+	unpackPath := strings.Replace(dir, ".zip", "", 1)
+
+	err = os.MkdirAll(unpackPath, 0755)
+	if err != nil {
+		logrus.WithField("ZIP", "creating ZIP file directory").Error(err)
+		return "", err
+	}
+
+	for _, file := range reader.File {
+		// ensure that any sub folders are created
+		path := filepath.Join(unpackPath, file.Name)
+		if file.FileInfo().IsDir() {
+			os.MkdirAll(path, file.Mode())
+			continue
+		}
+
+		fileReader, err := file.Open()
+		if err != nil {
+			logrus.WithField("ZIP", "opening a ZIP file").Error(err)
+			return "", err
+		}
+
+		targetFile, err := os.OpenFile(path, os.O_WRONLY | os.O_CREATE | os.O_TRUNC, file.Mode())
+		if err != nil {
+			logrus.WithField("ZIP", "opening ZIP target").Error(err)
+			return "", err
+		}
+
+		_, err = io.Copy(targetFile, fileReader)
+		if err != nil {
+			logrus.WithField("ZIP", "copying ZIP file").Error(err)
+			return "", err
+		}
+
+		fileReader.Close()
+		targetFile.Close()
+	}
+
+	return unpackPath, nil
 }
