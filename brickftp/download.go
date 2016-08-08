@@ -6,7 +6,6 @@ import (
 	"io"
 	"github.com/HomesNZ/go-common/util"
 	"github.com/Sirupsen/logrus"
-	"fmt"
 )
 
 const (
@@ -20,7 +19,6 @@ func Download(path string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	fmt.Println("\t\tCONNECTED")
 
 	src, err := client.Open(path)
 	if err != nil {
