@@ -1,4 +1,4 @@
-package brickftp_test
+package zip_test
 
 import (
 	"testing"
