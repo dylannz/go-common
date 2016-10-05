@@ -11,6 +11,7 @@ type BoundingBox struct {
 func NewBoundingBox(nwLat float64, nwLon float64, seLat float64, seLon float64, srid int) (*BoundingBox, error) {
 	var bbBox BoundingBox
 	var err error
+	bbBox.SRID = srid
 
 	bbBox.NW, err = NewPoint(nwLon, nwLat, srid)
 	if err != nil {
