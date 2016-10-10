@@ -2,12 +2,12 @@ package geo
 
 // BoundingBox contains two sets of lat longs which represent a cube area
 type BoundingBox struct {
-	NW   Point
-	SE   Point
+	NW   *Point
+	SE   *Point
 	SRID int
 }
 
-// New returns a new BoundingBox from the given lat/long pairs
+// NewBoundingBox returns a new BoundingBox from the given lat/long pairs
 func NewBoundingBox(nwLat float64, nwLon float64, seLat float64, seLon float64, srid int) (*BoundingBox, error) {
 	var bbBox BoundingBox
 	var err error
