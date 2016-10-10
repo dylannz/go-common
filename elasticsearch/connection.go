@@ -1,9 +1,12 @@
 package elasticsearch
 
 import (
+	"strings"
 	"sync"
 
-	"github.com/olivere/elastic"
+	"github.com/HomesNZ/go-common/env"
+
+	"gopkg.in/olivere/elastic.v3"
 )
 
 var (
@@ -14,11 +17,14 @@ var (
 func initConn() {
 	// Create a client
 	var err error
-	conn, err = elastic.NewClient()
+	conn, err = elastic.NewClient(
+		elastic.SetURL(strings.Split(env.MustGetString("ELASTICSEARCH_URLS"), ";")...),
+	)
 	if err != nil {
 		// Handle error
 		panic(err)
 	}
+
 }
 
 // Conn returns a connection to ElasticSearch
