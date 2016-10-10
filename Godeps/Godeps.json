@@ -56,6 +56,11 @@
 			"Rev": "8abfc3eeb742e153b764d3b75a2c7b9e3b34520b"
 		},
 		{
+			"ImportPath": "github.com/olivere/elastic",
+			"Comment": "v3.0.54-1-g0f69254",
+			"Rev": "0f69254b93852f15c6326b59462d9684bf993d68"
+		},
+		{
 			"ImportPath": "github.com/onsi/ginkgo",
 			"Comment": "v1.2.0-42-g07d85e6",
 			"Rev": "07d85e6b10c4289c7d612f9b13f45ba36f66d55b"
@@ -209,8 +214,31 @@
 			"Rev": "83f1503f771a82af8a31f358eb825e9efb5dae6c"
 		},
 		{
+			"ImportPath": "golang.org/x/net/context",
+			"Rev": "1358eff22f0dd0c54fc521042cc607f6ff4b531a"
+		},
+		{
+			"ImportPath": "golang.org/x/net/context/ctxhttp",
+			"Rev": "1358eff22f0dd0c54fc521042cc607f6ff4b531a"
+		},
+		{
 			"ImportPath": "golang.org/x/sys/unix",
 			"Rev": "324e1375807370c3934e14f3a97e7d160832f6b4"
+		},
+		{
+			"ImportPath": "gopkg.in/guregu/null.v3",
+			"Comment": "v3.1",
+			"Rev": "41961cea0328defc5f95c1c473f89ebf0d1813f6"
+		},
+		{
+			"ImportPath": "gopkg.in/olivere/elastic.v3/backoff",
+			"Comment": "v3.0.54",
+			"Rev": "3f5e619b7a90ff8d4ad81a53ca8e74ee79b83b42"
+		},
+		{
+			"ImportPath": "gopkg.in/olivere/elastic.v3/uritemplates",
+			"Comment": "v3.0.54",
+			"Rev": "3f5e619b7a90ff8d4ad81a53ca8e74ee79b83b42"
 		}
 	]
 }
