@@ -24,7 +24,6 @@ func initConn() {
 		// Handle error
 		panic(err)
 	}
-
 }
 
 // Conn returns a connection to ElasticSearch
