@@ -1,4 +1,4 @@
-package point
+package geo
 
 import (
 	"encoding/json"
@@ -14,7 +14,7 @@ type Point struct {
 	SRID int
 }
 
-// New creates and returns a new Point
+// NewPoint creates and returns a new Point
 func NewPoint(x float64, y float64, srid int) (*Point, error) {
 	return &Point{
 		Long: x,
