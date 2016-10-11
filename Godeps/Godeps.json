@@ -11,6 +11,11 @@
 			"Rev": "c840aba2c0a72206d6051f9a01ba13389858d75b"
 		},
 		{
+			"ImportPath": "github.com/HomesNZ/elastic",
+			"Comment": "v3.0.55-6-g6373a82",
+			"Rev": "6373a82e96b0e443c9977aff1ea6aa634d1b352b"
+		},
+		{
 			"ImportPath": "github.com/Sirupsen/logrus",
 			"Comment": "v0.8.6-7-g9c060de",
 			"Rev": "9c060de643590dae45da9d7c26276463bfc46fa0"
@@ -224,11 +229,6 @@
 			"ImportPath": "gopkg.in/guregu/null.v3",
 			"Comment": "v3.1",
 			"Rev": "41961cea0328defc5f95c1c473f89ebf0d1813f6"
-		},
-		{
-			"ImportPath": "gopkg.in/olivere/elastic.v3",
-			"Comment": "v3.0.54",
-			"Rev": "3f5e619b7a90ff8d4ad81a53ca8e74ee79b83b42"
 		},
 		{
 			"ImportPath": "gopkg.in/olivere/elastic.v3/backoff",
