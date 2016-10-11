@@ -6,7 +6,7 @@ import (
 
 	"github.com/HomesNZ/go-common/env"
 
-	"gopkg.in/olivere/elastic.v3"
+	"github.com/HomesNZ/elastic"
 )
 
 var (
@@ -17,9 +17,14 @@ var (
 func initConn() {
 	// Create a client
 	var err error
-	conn, err = elastic.NewClient(
+	options := []elastic.ClientOptionFunc{
 		elastic.SetURL(strings.Split(env.MustGetString("ELASTICSEARCH_URLS"), ";")...),
-	)
+	}
+	authorize := env.GetString("ELASTICSEARCH_IAM_AUTHORIZE", "")
+	if authorize != "" {
+		options = append(options, elastic.SetAuthorizationHeader(authorize))
+	}
+	conn, err = elastic.NewClient(options...)
 	if err != nil {
 		// Handle error
 		panic(err)
