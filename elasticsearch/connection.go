@@ -20,9 +20,9 @@ func initConn() {
 	options := []elastic.ClientOptionFunc{
 		elastic.SetURL(strings.Split(env.MustGetString("ELASTICSEARCH_URLS"), ";")...),
 	}
-	authorize := env.GetString("ELASTICSEARCH_IAM_AUTHORIZE", "")
-	if authorize != "" {
-		options = append(options, elastic.SetAuthorizationHeader(authorize))
+	authorization := env.GetString("ELASTICSEARCH_IAM_AUTHORIZATION", "")
+	if authorization != "" {
+		options = append(options, elastic.SetAuthorizationHeader(authorization))
 	}
 	conn, err = elastic.NewClient(options...)
 	if err != nil {
