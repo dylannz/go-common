@@ -12,8 +12,8 @@
 		},
 		{
 			"ImportPath": "github.com/HomesNZ/elastic",
-			"Comment": "v3.0.55-6-g6373a82",
-			"Rev": "6373a82e96b0e443c9977aff1ea6aa634d1b352b"
+			"Comment": "v3.0.55-5-gceb68d2",
+			"Rev": "ceb68d27c0b7739e11d41554fed5b53b8e676ea5"
 		},
 		{
 			"ImportPath": "github.com/Sirupsen/logrus",
@@ -208,6 +208,10 @@
 			"ImportPath": "github.com/rafaeljusto/redigomock",
 			"Comment": "v1.0-41-g4e848f8",
 			"Rev": "4e848f835b81c67264868400e9b5cde3038e9d14"
+		},
+		{
+			"ImportPath": "github.com/smartystreets/go-aws-auth",
+			"Rev": "2043e6d0bb7e4c18464a7bba562acbe482e3cabd"
 		},
 		{
 			"ImportPath": "golang.org/x/crypto/ssh",
