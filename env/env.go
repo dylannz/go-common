@@ -132,6 +132,15 @@ func GetBool(key string, defVal bool) bool {
 	return val
 }
 
+// GetBoolOrFalse returns the environment variable as a bool, or false when undefined or if it couldn't be parsed as a bool.
+func GetBoolOrFalse(key string) bool {
+	val, err := strconv.ParseBool(Get(key))
+	if err != nil {
+		return false
+	}
+	return val
+}
+
 // MustGetString returns the environment variable as a string, or logs a fatal error when undefined.
 func MustGetString(key string) string {
 	val := Get(key)
