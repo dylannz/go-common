@@ -1136,9 +1136,6 @@ func (c *Client) PerformRequestC(ctx context.Context, method, path string, param
 		if basicAuth {
 			req.SetBasicAuth(basicAuthUsername, basicAuthPassword)
 		}
-		if c.prepareRequest != nil {
-			c.prepareRequest((*http.Request)(req))
-		}
 
 		// Set body
 		if body != nil {
@@ -1151,6 +1148,11 @@ func (c *Client) PerformRequestC(ctx context.Context, method, path string, param
 
 		// Tracing
 		c.dumpRequest((*http.Request)(req))
+
+		// Prepare
+		if c.prepareRequest != nil {
+			c.prepareRequest((*http.Request)(req))
+		}
 
 		// Get response
 		var res *http.Response
