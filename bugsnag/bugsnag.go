@@ -21,3 +21,10 @@ func InitBugsnag() {
 		logrus.Info("Bugsnag configured to capture panics")
 	}
 }
+
+
+//Notify wraps the bugsnag.Notify call
+func Notify (err error, rawData ...interface{}){
+	bugsnag.Notify(err, rawData)
+}
+
