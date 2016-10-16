@@ -146,6 +146,25 @@
 			"Rev": "afb8bf514d9344600dcb0f45e364d2b628b6c6d3"
 		},
 		{
+			"ImportPath": "github.com/bugsnag/bugsnag-go",
+			"Comment": "v1.0.5-28-g31ae348",
+			"Rev": "31ae3484de3e96dbc4de1756b14ad6393b94103c"
+		},
+		{
+			"ImportPath": "github.com/bugsnag/bugsnag-go/errors",
+			"Comment": "v1.0.5-28-g31ae348",
+			"Rev": "31ae3484de3e96dbc4de1756b14ad6393b94103c"
+		},
+		{
+			"ImportPath": "github.com/bugsnag/osext",
+			"Rev": "0dd3f918b21bec95ace9dc86c7e70266cfc5c702"
+		},
+		{
+			"ImportPath": "github.com/bugsnag/panicwrap",
+			"Comment": "1.1.0-1-gd6191e2",
+			"Rev": "d6191e27ad06236eaad65d79e49a08b03b9f8029"
+		},
+		{
 			"ImportPath": "github.com/cenkalti/backoff",
 			"Comment": "v1.0.0-7-gcdf48bb",
 			"Rev": "cdf48bbc1eb78d1349cbda326a4a037f7ba565c6"
