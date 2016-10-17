@@ -1,12 +1,14 @@
 package elasticsearch
 
 import (
+	"net/http"
 	"strings"
 	"sync"
 
 	"github.com/HomesNZ/go-common/env"
 
-	"gopkg.in/olivere/elastic.v3"
+	"github.com/HomesNZ/elastic"
+	"github.com/smartystreets/go-aws-auth"
 )
 
 var (
@@ -14,12 +16,27 @@ var (
 	initOnce = sync.Once{}
 )
 
+func awsAuth() bool {
+	key := env.GetString("AWS_ACCESS_KEY_ID", "")
+	secret := env.GetString("AWS_SECRET_ACCESS_KEY", "")
+	token := env.GetString("AWS_SECURITY_TOKEN", "")
+	return key != "" && secret != "" || token != ""
+}
+
 func initConn() {
 	// Create a client
 	var err error
-	conn, err = elastic.NewClient(
+	options := []elastic.ClientOptionFunc{
 		elastic.SetURL(strings.Split(env.MustGetString("ELASTICSEARCH_URLS"), ";")...),
-	)
+		elastic.SetHealthcheck(env.GetBool("ELASTICSEARCH_HEALTH_CHECK", true)),
+		elastic.SetSniff(env.GetBool("ELASTICSEARCH_SNIFF", false)), // causes issues within AWS, so off by default
+	}
+	if awsAuth() {
+		options = append(options, elastic.SetPrepareRequest(func(req *http.Request) {
+			awsauth.Sign(req)
+		}))
+	}
+	conn, err = elastic.NewClient(options...)
 	if err != nil {
 		// Handle error
 		panic(err)

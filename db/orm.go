@@ -27,7 +27,7 @@ func InitORM() {
 		panic(err)
 	}
 
-	if env.GetBool("LOG_ORM_QUERIES") {
+	if env.GetBool("LOG_ORM_QUERIES", false) {
 		g.LogMode(true)
 	}
 

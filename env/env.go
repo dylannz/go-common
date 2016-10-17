@@ -123,8 +123,17 @@ func GetString(key, defVal string) string {
 	return val
 }
 
-// GetBool returns the environment variable as a bool, or false when undefined or if it couldn't be parsed as a bool.
-func GetBool(key string) bool {
+// GetBool returns the environment variable as a bool, or the default value when undefined or unparsable.
+func GetBool(key string, defVal bool) bool {
+	val, err := strconv.ParseBool(Get(key))
+	if err != nil {
+		return defVal
+	}
+	return val
+}
+
+// GetBoolOrFalse returns the environment variable as a bool, or false when undefined or if it couldn't be parsed as a bool.
+func GetBoolOrFalse(key string) bool {
 	val, err := strconv.ParseBool(Get(key))
 	if err != nil {
 		return false
