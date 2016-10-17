@@ -12,8 +12,8 @@
 		},
 		{
 			"ImportPath": "github.com/HomesNZ/elastic",
-			"Comment": "v3.0.55-6-ge519d24",
-			"Rev": "e519d24c88f71a36feeab1c26610503a7fbf7c27"
+			"Comment": "v3.0.55-7-g5029273",
+			"Rev": "5029273a31e48350d215ca8895e04ce535fe6992"
 		},
 		{
 			"ImportPath": "github.com/Sirupsen/logrus",
