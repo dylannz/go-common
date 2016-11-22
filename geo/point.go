@@ -12,6 +12,10 @@ type Point struct {
 	Lat  float64
 	Long float64
 	SRID int
+
+	// A flag that stipulates this point must include the longitude twice when
+	// marshalling as JSON, once as "long" and once as "lon" (deprecated).
+	marshalLongAsLon bool
 }
 
 // NewPoint creates and returns a new Point
@@ -20,6 +24,16 @@ func NewPoint(x float64, y float64, srid int) (*Point, error) {
 		Long: x,
 		Lat:  y,
 		SRID: srid,
+	}, nil
+}
+
+// NewPointLongAsLon returns a new point with marshalLongAsLon set to true
+func NewPointLongAsLon(x float64, y float64, srid int) (*Point, error) {
+	return &Point{
+		Long:             x,
+		Lat:              y,
+		SRID:             srid,
+		marshalLongAsLon: true,
 	}, nil
 }
 
@@ -33,6 +47,13 @@ func (p Point) IsNull() bool {
 func (p Point) MarshalJSON() ([]byte, error) {
 	if p.IsNull() {
 		return []byte("null"), nil
+	}
+	if p.marshalLongAsLon {
+		return json.Marshal(map[string]float64{
+			"lat":  p.Lat,
+			"long": p.Long,
+			"lon":  p.Long,
+		})
 	}
 	return json.Marshal(map[string]float64{
 		"lat":  p.Lat,
