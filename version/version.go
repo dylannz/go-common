@@ -31,6 +31,7 @@ func Log() {
 var Handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	v := []byte(Version)
 
+	w.Header().Set("Content-Type", "text/plain")
 	w.Header().Set("Content-Length", fmt.Sprintf("%v", len(v)))
 	w.WriteHeader(http.StatusOK)
 	w.Write(v)
