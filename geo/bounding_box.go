@@ -24,3 +24,8 @@ func NewBoundingBox(nwLat float64, nwLon float64, seLat float64, seLon float64, 
 
 	return &bbBox, nil
 }
+
+// Centroid calculates and returns the centroid of the bounding box
+func (bb BoundingBox) Centroid() (*Point, error) {
+	return CalculateCentroid([]*Point{bb.NW, bb.SE})
+}
