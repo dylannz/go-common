@@ -1,9 +1,15 @@
 package geo
 
-import "math"
+import (
+	"errors"
+	"math"
+)
 
 // CalculateCentroid calculates a centroid based on an array of points
-func CalculateCentroid(coords []*Point) (float64, float64) {
+func CalculateCentroid(coords []*Point) (*Point, error) {
+	if len(coords) == 0 {
+		return nil, errors.New("can't calculate centroid: no coordinates supplied")
+	}
 	x := float64(0)
 	y := float64(0)
 	z := float64(0)
@@ -33,5 +39,5 @@ func CalculateCentroid(coords []*Point) (float64, float64) {
 	lat := cLat * 180 / math.Pi
 	long := cLong * 180 / math.Pi
 
-	return lat, long
+	return NewPoint(long, lat, coords[0].SRID)
 }
