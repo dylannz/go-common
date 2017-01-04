@@ -5,9 +5,9 @@ import (
 	"os"
 	"strings"
 
-	. "github.com/HomesNZ/data-import/cdn/cloudinary"
+	. "github.com/HomesNZ/go-common/cloudinary"
 
-	"github.com/HomesNZ/data-import/testutil"
+	"github.com/HomesNZ/go-common/testutil"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
