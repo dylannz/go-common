@@ -90,7 +90,6 @@ func (c CDNService) PublicID(uri string) (string, error) {
 	}
 
 	paths := strings.Split(u.Path, "/")
-	fmt.Println(paths)
 	id := strings.Join(paths[5:len(paths)], "/")
 	id = strings.Split(id, ".")[0]
 	return id, nil
