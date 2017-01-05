@@ -41,4 +41,11 @@ var _ = Describe("cloudinary", func() {
 			Expect(u).To(HavePrefix(expectedURL))
 		})
 	})
+	Describe(".PublicID", func() {
+		It("Gets the correct PublicID from a valid cloudinaryURI", func() {
+			val, err := Service().PublicID("http://res.cloudinary.com/dhqm62oue/image/upload/v1483645399/user_images/_1483645397642177383.jpg")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(val).To(Equal("_1483645397642177383"))
+		})
+	})
 })

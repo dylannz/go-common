@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"net/url"
+	"strings"
 	"time"
 
 	"github.com/HomesNZ/go-common/env"
@@ -68,10 +70,32 @@ func (c *CDNService) UploadURI(uri string) error {
 
 // RemoveAsset removes an asset from Cloudinary.
 func (c CDNService) RemoveAsset(uri string) error {
-	id, err := c.service.PublicID(uri)
+	id, err := c.PublicID(uri)
 	if err != nil {
 		return err
 	}
 
 	return c.service.Delete(id, "", cloudinary.ImageType)
+}
+
+//PublicID returns the public ID of a cloudinary URL
+func (c CDNService) PublicID(uri string) (string, error) {
+	if uri == "" {
+		return "", cloudinary.ErrUnexpectedURLPathFormat
+	}
+
+	u, err := url.Parse(uri)
+	if err != nil {
+		return "", err
+	}
+
+	paths := strings.Split(u.Path, "/")
+
+	id := paths[len(paths)-1]
+
+	if len(strings.Split(id, ".")) > 1 {
+		return strings.Split(id, ".")[0], nil
+	}
+	return id, nil
+
 }
