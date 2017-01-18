@@ -34,7 +34,7 @@ func ParseArray(array string) []string {
 	for _, match := range matches {
 		s := match[valueIndex]
 		// the string _might_ be wrapped in quotes, so trim them:
-		s = strings.Trim(s, "\"")
+		s = strings.Trim(s, "\",")
 		results = append(results, s)
 	}
 	return results
