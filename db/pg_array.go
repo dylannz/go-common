@@ -10,7 +10,7 @@ import (
 var (
 	// unquoted array values must not contain: (" , \ { } whitespace NULL)
 	// and must be at least one char
-	unquotedChar  = `[^",\\{}\s(NULL)]`
+	unquotedChar  = `[^",\\{}\s]`
 	unquotedValue = fmt.Sprintf("(%s)+", unquotedChar)
 
 	// quoted array values are surrounded by double quotes, can be any
@@ -38,17 +38,17 @@ func ParseArray(array string) []string {
 		results = append(results, s)
 	}
 	return results
+
 }
 
 // CreateStringArray is a function that will create a string formatted to be used for Postgres Array types
 func CreateStringArray(array []string) string {
-	var strArray string
-	for i := 0; i < len(array); i++ {
-		if i > 0 {
-			strArray += ", "
-		}
-		strArray += "\"" + array[i] + "\""
+	if len(array) == 0 {
+		return "{}"
 	}
-
-	return "{" + strArray + "}"
+	results := []string{}
+	for _, v := range array {
+		results = append(results, strings.Replace(v, "\"", "\\\"", -1))
+	}
+	return "{\"" + strings.Join(results, "\",\"") + "\"}"
 }
