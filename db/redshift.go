@@ -94,7 +94,7 @@ func (db RS) verifyConnection() error {
 
 // connectionString returns the database connection string.
 func (db RS) connectionString() string {
-	password := env.GetString("DB_PASSWORD", "")
+	password := env.GetString("REDSHIFT_PASSWORD", "")
 	if password != "" {
 		password = ":" + password
 	}
