@@ -49,7 +49,7 @@ func ConnRedshift() *sql.DB {
 	if connRedhshift == nil {
 		onceRedshift.Do(InitConnection)
 	}
-	return conn
+	return connRedhshift
 }
 
 // Open will initialize the database connection or raise an error.
