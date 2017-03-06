@@ -87,3 +87,37 @@ func (p Point) Compare(c Point, diff float64) bool {
 	}
 	return math.Abs(p.Lat-c.Lat) < diff && math.Abs(p.Long-c.Long) < diff
 }
+
+// Distance function returns the distance (in meters) between two points of
+//     a given longitude and latitude relatively accurately (using a spherical
+//     approximation of the Earth) through the Haversin Distance Formula for
+//     great arc distance on a sphere with accuracy for small distances
+//
+// point coordinates are supplied in degrees and converted into rad. in the func
+//
+// distance returned is METERS!!!!!!
+// http://en.wikipedia.org/wiki/Haversine_formula
+//
+// Shamelessly stolen from this gist:
+// https://gist.github.com/cdipaolo/d3f8db3848278b49db68
+// - dylannz
+func (p *Point) Distance(p2 *Point) float64 {
+	// convert to radians
+	la1 := p.Lat * math.Pi / 180
+	lo1 := p.Long * math.Pi / 180
+	la2 := p2.Lat * math.Pi / 180
+	lo2 := p2.Long * math.Pi / 180
+
+	// must cast radius as float to multiply later
+	r := 6378100.0 // Earth radius in METERS
+
+	// calculate
+	h := hsin(la2-la1) + math.Cos(la1)*math.Cos(la2)*hsin(lo2-lo1)
+
+	return 2 * r * math.Asin(math.Sqrt(h))
+}
+
+// haversin(θ) function
+func hsin(theta float64) float64 {
+	return math.Pow(math.Sin(theta/2), 2)
+}
