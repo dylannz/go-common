@@ -8,7 +8,7 @@ import (
 //
 // Messages will be passed into handleResponse.
 // Subscribe will block forever, so a goroutine is recommended
-func (c Cache) Subscribe(subscription string, handleResponse func(interface{}) ) {
+func (c Cache) Subscribe(subscription string, handleResponse func(interface{})) {
 	conn := c.Conn()
 	defer conn.Close()
 
@@ -20,7 +20,7 @@ func (c Cache) Subscribe(subscription string, handleResponse func(interface{}) )
 	for err == nil {
 		reply, err := conn.Receive()
 		if err != nil {
-			logrus.Error(err)
+			logrus.Fatal("Could not connect to redis ", err.Error())
 		}
 
 		handleResponse(reply)
