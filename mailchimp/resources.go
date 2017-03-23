@@ -516,6 +516,9 @@ func formatUrl(url string, params interface{}) (string, error) {
 	if !ok {
 		return "", errors.New("MailChimp: unknown resource " + url)
 	}
+	if params == nil {
+		return url, nil
+	}
 	b := bytes.Buffer{}
 	err := tmpl.Execute(&b, params)
 	if err != nil {
