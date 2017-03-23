@@ -27,3 +27,6 @@ func InitNewRelic(appName string) {
 func App() newrelic.Application {
 	return app
 }
+
+// WrapHandleFunc is an alias to newrelic.WrapHandleFunc
+var WrapHandleFunc = newrelic.WrapHandleFunc
