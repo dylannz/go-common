@@ -6,6 +6,11 @@ import (
 	"html/template"
 )
 
+var (
+	ErrUnknownResource   = errors.New("Unknown resource")
+	ErrBadlyFormattedURL = errors.New("Badly formatted URL")
+)
+
 type AuthorizedAppParams struct {
 	AppID string
 }
@@ -514,7 +519,7 @@ func init() {
 func formatUrl(url string, params interface{}) (string, error) {
 	tmpl, ok := endpointTemplates[url]
 	if !ok {
-		return "", errors.New("MailChimp: unknown resource " + url)
+		return "", ErrUnknownResource
 	}
 	if params == nil {
 		return url, nil
@@ -522,7 +527,7 @@ func formatUrl(url string, params interface{}) (string, error) {
 	b := bytes.Buffer{}
 	err := tmpl.Execute(&b, params)
 	if err != nil {
-		return "", errors.New("MailChimp: badly formatted URL " + err.Error())
+		return "", ErrBadlyFormattedURL
 	}
 	return b.String(), nil
 }
