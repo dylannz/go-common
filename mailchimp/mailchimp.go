@@ -8,7 +8,7 @@ import (
 	"net/http"
 )
 
-const baseURI = "https://%s.api.mailchimp.com/3.0/"
+const baseURI = "https://%s.api.mailchimp.com/3.0"
 
 // MailChimp represents a configuration state for the API client.
 type MailChimp struct {
@@ -67,7 +67,7 @@ func (m MailChimp) doRequest(method string, url string, params interface{}, requ
 		}
 		body.Write(b)
 	}
-	req, err := http.NewRequest(method, urlStr, &body)
+	req, err := http.NewRequest(method, m.baseURI()+urlStr, &body)
 	if err != nil {
 		return err
 	}
