@@ -7,6 +7,7 @@ import (
 	"sync"
 
 	"github.com/HomesNZ/go-common/env"
+	"github.com/Sirupsen/logrus"
 	newrelic "github.com/newrelic/go-agent"
 )
 
@@ -19,31 +20,34 @@ var (
 // error.
 func InitNewRelic(appName string) {
 	var err error
+	apiKey := env.GetString("NEWRELIC_API_KEY", "")
+	if apiKey == "" {
+		logrus.Info("Skipping New Relic initialization - NEWRELIC_API_KEY is empty")
+		return
+	}
 	e := env.Env()
 	if e == "" {
 		e = "development"
 	}
-	config := newrelic.NewConfig(fmt.Sprintf("%s-%s", appName, e), env.MustGetString("NEWRELIC_API_KEY"))
+	config := newrelic.NewConfig(fmt.Sprintf("%s-%s", appName, e), apiKey)
 	app, err = newrelic.NewApplication(config)
 	if err != nil {
 		panic(err)
 	}
-}
-
-// App returns the NewRelic application
-func App() newrelic.Application {
-	return app
+	logrus.Info("New Relic initialized successfully")
 }
 
 // Middleware is an easy way to implement NewRelic as middleware in an Alice
 // chain.
 func Middleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		txn := app.StartTransaction(r.URL.Path, w, r)
-		for k, v := range r.URL.Query() {
-			txn.AddAttribute(k, strings.Join(v, ","))
+		if app != nil {
+			txn := app.StartTransaction(r.URL.Path, w, r)
+			for k, v := range r.URL.Query() {
+				txn.AddAttribute(k, strings.Join(v, ","))
+			}
+			defer txn.End()
 		}
-		defer txn.End()
 		next.ServeHTTP(w, r)
 	})
 }
