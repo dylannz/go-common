@@ -48,8 +48,8 @@ func (m MailChimp) Put(url string, params interface{}, requestData interface{}, 
 	return m.doRequest("PUT", url, params, requestData, responseData)
 }
 
-func (m MailChimp) Delete(url string, params interface{}, requestData interface{}, responseData interface{}) error {
-	return m.doRequest("DELETE", url, params, requestData, responseData)
+func (m MailChimp) Delete(url string, params interface{}, requestData interface{}) error {
+	return m.doRequest("DELETE", url, params, requestData, nil)
 }
 
 func (m MailChimp) doRequest(method string, url string, params interface{}, requestData interface{}, responseData interface{}) error {
