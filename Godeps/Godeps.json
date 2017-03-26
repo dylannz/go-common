@@ -1,7 +1,7 @@
 {
 	"ImportPath": "github.com/HomesNZ/go-common",
-	"GoVersion": "go1.6",
-	"GodepVersion": "v63",
+	"GoVersion": "go1.7",
+	"GodepVersion": "v78",
 	"Packages": [
 		"./..."
 	],
@@ -228,6 +228,40 @@
 			"Rev": "8abfc3eeb742e153b764d3b75a2c7b9e3b34520b"
 		},
 		{
+			"ImportPath": "github.com/newrelic/go-agent",
+			"Comment": "v1.8.0",
+			"Rev": "60ed7aa03a85a1355b4189f66e23604de8f27d57"
+		},
+		{
+			"ImportPath": "github.com/newrelic/go-agent/internal",
+			"Comment": "v1.8.0",
+			"Rev": "60ed7aa03a85a1355b4189f66e23604de8f27d57"
+		},
+		{
+			"ImportPath": "github.com/newrelic/go-agent/internal/jsonx",
+			"Comment": "v1.8.0",
+			"Rev": "60ed7aa03a85a1355b4189f66e23604de8f27d57"
+		},
+		{
+			"ImportPath": "github.com/newrelic/go-agent/internal/logger",
+			"Comment": "v1.8.0",
+			"Rev": "60ed7aa03a85a1355b4189f66e23604de8f27d57"
+		},
+		{
+			"ImportPath": "github.com/newrelic/go-agent/internal/sysinfo",
+			"Comment": "v1.8.0",
+			"Rev": "60ed7aa03a85a1355b4189f66e23604de8f27d57"
+		},
+		{
+			"ImportPath": "github.com/newrelic/go-agent/internal/utilization",
+			"Comment": "v1.8.0",
+			"Rev": "60ed7aa03a85a1355b4189f66e23604de8f27d57"
+		},
+		{
+			"ImportPath": "github.com/nicday/go-cloudinary",
+			"Rev": "cad4d25534aa10989073d97d9c90810bc9e06702"
+		},
+		{
 			"ImportPath": "github.com/onsi/ginkgo",
 			"Comment": "v1.2.0-42-g07d85e6",
 			"Rev": "07d85e6b10c4289c7d612f9b13f45ba36f66d55b"
@@ -400,6 +434,26 @@
 			"ImportPath": "gopkg.in/guregu/null.v3",
 			"Comment": "v3.1",
 			"Rev": "41961cea0328defc5f95c1c473f89ebf0d1813f6"
+		},
+		{
+			"ImportPath": "gopkg.in/mgo.v2",
+			"Comment": "r2015.12.06-2-g03c9f3e",
+			"Rev": "03c9f3ee4c14c8e51ee521a6a7d0425658dd6f64"
+		},
+		{
+			"ImportPath": "gopkg.in/mgo.v2/bson",
+			"Comment": "r2015.12.06-2-g03c9f3e",
+			"Rev": "03c9f3ee4c14c8e51ee521a6a7d0425658dd6f64"
+		},
+		{
+			"ImportPath": "gopkg.in/mgo.v2/internal/sasl",
+			"Comment": "r2015.12.06-2-g03c9f3e",
+			"Rev": "03c9f3ee4c14c8e51ee521a6a7d0425658dd6f64"
+		},
+		{
+			"ImportPath": "gopkg.in/mgo.v2/internal/scram",
+			"Comment": "r2015.12.06-2-g03c9f3e",
+			"Rev": "03c9f3ee4c14c8e51ee521a6a7d0425658dd6f64"
 		},
 		{
 			"ImportPath": "gopkg.in/olivere/elastic.v3/backoff",
