@@ -1,10 +1,12 @@
 package config
 
 import (
+	"errors"
 	"os"
 
 	"github.com/HomesNZ/go-common/env"
 	"github.com/Sirupsen/logrus"
+	bugsnag "github.com/bugsnag/bugsnag-go"
 )
 
 // InitLogger initializes the logger by setting the log level to the env var LOG_LEVEL, or defaulting to `info`.
@@ -22,5 +24,24 @@ func InitLogger() {
 		logrus.SetLevel(level)
 	}
 
+	// Hooks
+	logrus.AddHook(bugsnagHook{})
+
 	logrus.Infof("Log level: %s", logrus.GetLevel().String())
+}
+
+type bugsnagHook struct{}
+
+// Levels returns the logging levels that this hook will be fired for.
+func (b bugsnagHook) Levels() []logrus.Level {
+	return []logrus.Level{
+		logrus.ErrorLevel,
+		logrus.PanicLevel,
+		logrus.WarnLevel,
+	}
+}
+
+// Fire sends the logrus entry to bugsnag.
+func (b bugsnagHook) Fire(entry *logrus.Entry) error {
+	return bugsnag.Notify(errors.New(entry.Message), entry.Data)
 }
