@@ -35,7 +35,7 @@ func initConn() {
 	}
 }
 
-// Conn returns the connection to DynamoDB
+// Conn returns the SNS connection
 func Conn() *sns.SNS {
 	initOnce.Do(initConn)
 	return conn
