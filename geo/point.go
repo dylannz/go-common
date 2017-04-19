@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"math"
 	"strconv"
+
+	"github.com/HomesNZ/go-common/extmath"
 )
 
 // Point represents a lat/long
@@ -120,4 +122,10 @@ func (p *Point) Distance(p2 *Point) float64 {
 // haversin(θ) function
 func hsin(theta float64) float64 {
 	return math.Pow(math.Sin(theta/2), 2)
+}
+
+// Round rounds the lat/long of a point to requested significant figures sf.
+func (p *Point) Round(sf int) {
+	p.Lat = extmath.Round(p.Lat, sf)
+	p.Long = extmath.Round(p.Long, sf)
 }
