@@ -8,7 +8,7 @@ import (
 	"testing"
 )
 
-func TestUtil(t *testing.T) {
+func TestExtmath(t *testing.T) {
 	config.InitLogger()
 
 	RegisterFailHandler(Fail)
