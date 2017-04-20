@@ -188,6 +188,14 @@
 			"Rev": "afbd495e5aaea13597b5e14fe514ddeaa4d76fc3"
 		},
 		{
+			"ImportPath": "github.com/goamz/goamz/aws",
+			"Rev": "b2c2eaf25cbb87f41087aa796facf82113809ed5"
+		},
+		{
+			"ImportPath": "github.com/goamz/goamz/sqs",
+			"Rev": "b2c2eaf25cbb87f41087aa796facf82113809ed5"
+		},
+		{
 			"ImportPath": "github.com/guregu/dynamo",
 			"Rev": "bc4b7d486595bb111de3cea80827c4c39fd0edb1"
 		},
@@ -413,6 +421,10 @@
 		{
 			"ImportPath": "github.com/smartystreets/go-aws-auth",
 			"Rev": "2043e6d0bb7e4c18464a7bba562acbe482e3cabd"
+		},
+		{
+			"ImportPath": "github.com/vaughan0/go-ini",
+			"Rev": "a98ad7ee00ec53921f08832bc06ecf7fd600e6a1"
 		},
 		{
 			"ImportPath": "golang.org/x/crypto/ssh",

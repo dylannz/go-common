@@ -1,0 +1,187 @@
+package sqsConsumer
+
+import (
+	"encoding/json"
+	"errors"
+	"fmt"
+	"time"
+
+	"github.com/Sirupsen/logrus"
+	"github.com/goamz/goamz/sqs"
+)
+
+// TODO: add tests
+
+var contextLogger = logrus.WithField("package", "sqs_consumer")
+
+const (
+	maxMessages = 10
+	// secondsToSleepOnError defines the number of seconds to sleep for when an
+	// error occurs while reciving SQS messages.
+	secondsToSleepOnError = 10
+)
+
+// MessageHandler is an anonymous function which is used to handle messages
+// recieved from the SQS queue. It should handle errors internally and return a
+// simple boolean to indicate if handling was successful.
+type MessageHandler func(message sqs.Message) bool
+
+// SNSMessageHandler is the same as MessageHandler except it converts an SQS
+// message to an SNS message format before sending to the handler.
+type SNSMessageHandler func(message SnsMessage) bool
+
+// SnsMessage is a data struct matching the output from a message pushed through
+// SQS from SNS.
+type SnsMessage struct {
+	Type             string
+	MessageID        string `json:"MessageId"`
+	TopicArn         string
+	Message          string
+	Timestamp        time.Time
+	SignatureVersion string
+	Signature        string
+	SigningCertURL   string
+	UnsubscribeURL   string
+}
+
+// Consumer contains all the channels to manage goroutines and the SQS
+// connection.
+type Consumer struct {
+	conn         *sqs.SQS
+	queueName    string
+	queue        *sqs.Queue
+	handler      interface{}
+	responseChan chan *sqs.ReceiveMessageResponse
+	doneChan     chan bool
+	started      bool
+}
+
+// NewConsumer returns a pointer to a fresh Consumer instance.
+func NewConsumer(conn *sqs.SQS, queueName string, handler interface{}) *Consumer {
+	return &Consumer{
+		conn:      conn,
+		queueName: queueName,
+		handler:   handler,
+	}
+}
+
+// Start attempts to initialize the long polling process.
+func (c Consumer) Start() error {
+	if c.started {
+		return errors.New("can't start sqs consumer: already started")
+	}
+	q, err := c.conn.GetQueue(c.queueName)
+	if err != nil {
+		return err
+	}
+	c.queue = q
+	c.responseChan = make(chan *sqs.ReceiveMessageResponse)
+	c.doneChan = make(chan bool)
+	c.started = true
+	go c.receive()
+	go c.handleResponses()
+	contextLogger.Info("now polling SQS queue:", c.queueName)
+	return nil
+}
+
+// recieve handles the SQS long polling process. It passes messages as it
+// recieves them to the responseChan for handleResponses to handle them. If it
+// receives a message on the doneChan, it'll close all channels, log a message,
+// and end the goroutine.
+func (c Consumer) receive() {
+	for {
+		select {
+		case <-c.doneChan:
+			close(c.doneChan)
+			close(c.responseChan)
+			c.doneChan = nil
+			c.responseChan = nil
+
+			c.queue = nil
+			c.started = false
+			contextLogger.Info("stopped polling SQS queue:", c.queueName)
+			return
+		default:
+			contextLogger.Debug("waiting for request...")
+			response, err := c.queue.ReceiveMessage(maxMessages)
+			if err != nil {
+				contextLogger.Errorf("Error occurred while receiving from SQS queue (%s), sleeping for %d seconds", err.Error(), secondsToSleepOnError)
+				time.Sleep(time.Duration(secondsToSleepOnError) * time.Second)
+				continue
+			}
+			contextLogger.Debug("request completed")
+			c.responseChan <- response
+		}
+	}
+}
+
+// handleResponses blocks its goroutine waiting for records to come through on
+// the response channel. As it receives responses, it spawns a goroutine to
+// handle each message recieved (1:1). This means messages are not necessarily
+// handled in order.
+func (c Consumer) handleResponses() {
+	for response := range c.responseChan {
+		for _, message := range response.Messages {
+			go c.handleMessage(message)
+		}
+	}
+}
+
+// handleMessage passes the handling off to c.handler. If the message is handled
+// successfully by c.handler, then it is deleted from SQS.
+func (c Consumer) handleMessage(message sqs.Message) {
+	logger := contextLogger.WithFields(logrus.Fields{
+		"receipt_handle": message.ReceiptHandle,
+		"message_id":     message.MessageId,
+	})
+	logger.Debug("handling message...")
+	if c.handler == nil {
+		// No handler supplied, don't handle!
+		logger.Debug("no message handler supplied")
+		return
+	}
+	switch handler := c.handler.(type) {
+	case MessageHandler:
+		if !handler(message) {
+			// Failed to handle message, do nothing. It's the responsibility of the
+			// handler to communicate the failure via logs/bugsnag etc.
+			logger.Debug("failed to handle message")
+			return
+		}
+	case SNSMessageHandler:
+		snsMessage := SnsMessage{}
+		err := json.Unmarshal([]byte(message.Body), &snsMessage)
+		if err != nil {
+			logger.Error(err)
+			return
+		}
+		if !handler(snsMessage) {
+			// Failed to handle message, do nothing. It's the responsibility of the
+			// handler to communicate the failure via logs/bugsnag etc.
+			logger.Debug("failed to handle message")
+			return
+		}
+	default:
+		panic(fmt.Sprintf("Unknown handler: %v", c.handler))
+	}
+
+	logger.Debug("message handled, deleting...")
+	// message was handled successfully, delete the message from SQS
+	_, err := c.queue.DeleteMessage(&message)
+	if err != nil {
+		logger.Error(err)
+		return
+	}
+	logger.Debug("message deleted")
+}
+
+// Stop sends true to the doneChan, which stops the long polling process. Has to
+// wait for the current poll to complete before the polling is stopped.
+func (c Consumer) Stop() error {
+	if !c.started {
+		return errors.New("can't stop sqs consumer: already stopped")
+	}
+	contextLogger.Info("stopping polling of SQS queue:", c.queueName)
+	c.doneChan <- true
+	return nil
+}
