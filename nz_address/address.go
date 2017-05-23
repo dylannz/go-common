@@ -38,34 +38,48 @@ func (a Address) Street() string {
 	)
 }
 
+func titleCase(s string) string {
+	return strings.Title(strings.ToLower(s))
+}
+
 // Display formats an address into a valid display address
 func (a Address) Display() string {
 	address := []string{}
 
 	if a.BuildingName != "" {
-		address = append(address, a.BuildingName)
+		unitBuildingName := titleCase(a.BuildingName)
+		if a.UnitIdentifier != "" {
+			unitBuildingName = strings.ToUpper(a.UnitIdentifier) + " " + unitBuildingName
+		}
+		address = append(address, unitBuildingName)
 	}
 
-	var identifier string
+	var identifierStreet string
+	street := titleCase(a.Street())
 	if a.StreetNumber != 0 {
 		if a.UnitIdentifier != "" && a.BuildingName == "" {
-			identifier += a.UnitIdentifier + "/"
+			identifierStreet += strings.ToUpper(a.UnitIdentifier) + "/"
 		}
-		identifier += strconv.Itoa(a.StreetNumber) + a.StreetAlpha + " "
-		address = append(address, strings.ToUpper(identifier))
+		identifierStreet += strconv.Itoa(a.StreetNumber) + strings.ToUpper(a.StreetAlpha)
+		if street != "" {
+			identifierStreet += " "
+		}
+	}
+	identifierStreet += street
+	if identifierStreet != "" {
+		address = append(address, identifierStreet)
 	}
 
-	address = append(address, a.Street())
 	if a.Suburb != "" {
-		address = append(address, a.Suburb)
+		address = append(address, titleCase(a.Suburb))
 	}
 	if a.RDNumber != "" {
-		address = append(address, "RD "+a.RDNumber)
+		address = append(address, "RD "+strings.ToUpper(a.RDNumber))
 	}
 	if a.City != "" {
-		address = append(address, a.City)
+		address = append(address, titleCase(a.City))
 	}
-	return strings.Title(strings.ToLower(strings.Join(address, ", ")))
+	return strings.Trim(strings.Join(address, ", "), " ")
 }
 
 // DisplayWithPostcode returns a display address with postcode appended to the
