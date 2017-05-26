@@ -17,11 +17,14 @@ package email
 import (
 	"bytes"
 	"fmt"
-	"github.com/HomesNZ/go-common/env"
-	"github.com/Sirupsen/logrus"
 	"net"
 	"net/smtp"
 	"time"
+
+	"github.com/HomesNZ/go-common/env"
+	"github.com/Sirupsen/logrus"
+	"github.com/jordan-wright/email"
+	"github.com/kr/pretty"
 )
 
 var (
@@ -55,27 +58,43 @@ func NewEmailSender(conf EmailConfig) Interface {
 // email.Interface is an interface to a struct that 'sends' emails. It allows the send function to be mocked out for testing.
 type Interface interface {
 	SendMail(email *Email) error
+	SendMailWithAttachment(email *Email) error
 }
 
-// Send sends a simple email via a smtp gateway using TLS
-func (e *EmailSender) SendMail(email *Email) error {
+func (e *EmailSender) createEmailBody(email *Email) (smtp.Auth, *bytes.Buffer) {
 	host, _, _ := net.SplitHostPort(e.Conf.ServerHostPort)
 	auth := smtp.PlainAuth("", e.Conf.Username, e.Conf.Password, host)
-
+	pretty.Print("Hello")
 	headers := make(map[string]string)
 	headers["From"] = email.From
 	headers["To"] = email.To
 	headers["Subject"] = email.Subject
 	headers["Date"] = time.Now().Format(time.UnixDate)
+
 	message := bytes.NewBufferString("")
 	for k, v := range headers {
 		message.WriteString(fmt.Sprintf("%s: %s\r\n", k, v))
 	}
+
 	message.WriteString("\r\n")
 	message.WriteString(email.Body)
-	err := e.Send(e.Conf.ServerHostPort, auth, email.From, []string{email.To}, message.Bytes())
-	if err != nil {
-		return err
+	return auth, message
+}
+
+// Send sends a simple email via a smtp gateway using TLS
+func (e *EmailSender) SendMail(email *Email) error {
+	auth, message := e.createEmailBody(email)
+	return e.Send(e.Conf.ServerHostPort, auth, email.From, []string{email.To}, message.Bytes())
+}
+
+func (sender *EmailSender) SendMailWithAttachment(emailContent *Email) error {
+	auth, body := sender.createEmailBody(emailContent)
+	e := &email.Email{
+		To:      []string{emailContent.To},
+		From:    emailContent.From,
+		Subject: emailContent.Body,
+		Text:    body.Bytes(),
 	}
-	return nil
+	e.AttachFile(emailContent.Attachment)
+	return e.Send(sender.Conf.ServerHostPort, auth)
 }
