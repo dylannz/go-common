@@ -1,7 +1,7 @@
 {
 	"ImportPath": "github.com/HomesNZ/go-common",
 	"GoVersion": "go1.7",
-	"GodepVersion": "v78",
+	"GodepVersion": "v79",
 	"Packages": [
 		"./..."
 	],
@@ -220,6 +220,11 @@
 			"ImportPath": "github.com/joho/godotenv",
 			"Comment": "v1-8-g443e926",
 			"Rev": "443e926da0d793d3b3f32118b1e4ba52ada26503"
+		},
+		{
+			"ImportPath": "github.com/jordan-wright/email",
+			"Comment": "v2.2-11-g09f803b",
+			"Rev": "09f803b133a9229292871a003eb1a5b077fb32b2"
 		},
 		{
 			"ImportPath": "github.com/kr/fs",

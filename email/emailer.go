@@ -19,16 +19,17 @@ import (
 	"fmt"
 	"net"
 	"net/smtp"
+	"sync"
 	"time"
 
 	"github.com/HomesNZ/go-common/env"
 	"github.com/Sirupsen/logrus"
 	"github.com/jordan-wright/email"
-	"github.com/kr/pretty"
 )
 
 var (
 	contextLogger = logrus.WithField("email", "sender")
+	once          sync.Once
 	Emailer       Interface
 )
 
@@ -64,7 +65,7 @@ type Interface interface {
 func (e *EmailSender) createEmailBody(email *Email) (smtp.Auth, *bytes.Buffer) {
 	host, _, _ := net.SplitHostPort(e.Conf.ServerHostPort)
 	auth := smtp.PlainAuth("", e.Conf.Username, e.Conf.Password, host)
-	pretty.Print("Hello")
+
 	headers := make(map[string]string)
 	headers["From"] = email.From
 	headers["To"] = email.To
@@ -83,18 +84,29 @@ func (e *EmailSender) createEmailBody(email *Email) (smtp.Auth, *bytes.Buffer) {
 
 // Send sends a simple email via a smtp gateway using TLS
 func (e *EmailSender) SendMail(email *Email) error {
+	once.Do(func() {
+		InitEmailer()
+	})
 	auth, message := e.createEmailBody(email)
 	return e.Send(e.Conf.ServerHostPort, auth, email.From, []string{email.To}, message.Bytes())
 }
 
-func (sender *EmailSender) SendMailWithAttachment(emailContent *Email) error {
-	auth, body := sender.createEmailBody(emailContent)
-	e := &email.Email{
+// SendMailWithAttachment sends an email with an Attachment using the content defined by Email
+func (e *EmailSender) SendMailWithAttachment(emailContent *Email) error {
+	once.Do(func() {
+		InitEmailer()
+	})
+	auth, body := e.createEmailBody(emailContent)
+	eml := &email.Email{
 		To:      []string{emailContent.To},
 		From:    emailContent.From,
 		Subject: emailContent.Body,
 		Text:    body.Bytes(),
 	}
-	e.AttachFile(emailContent.Attachment)
-	return e.Send(sender.Conf.ServerHostPort, auth)
+
+	_, err := eml.AttachFile(emailContent.Attachment)
+	if err != nil {
+		return err
+	}
+	return eml.Send(e.Conf.ServerHostPort, auth)
 }
