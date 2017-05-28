@@ -27,13 +27,15 @@ type EmailSender struct {
 }
 
 func InitEmailer() {
-	Emailer = EmailSender{
-		Conf: EmailConfig{
-			ServerHostPort: env.MustGetString("SMTP_HOST"),
-			Username:       env.MustGetString("SMTP_USER"),
-			Password:       env.MustGetString("SMTP_PASSWORD"),
-		},
-	}
+	once.Do(func() {
+		Emailer = EmailSender{
+			Conf: EmailConfig{
+				ServerHostPort: env.MustGetString("SMTP_HOST"),
+				Username:       env.MustGetString("SMTP_USER"),
+				Password:       env.MustGetString("SMTP_PASSWORD"),
+			},
+		}
+	})
 }
 
 // Send sends a simple email via a smtp gateway using TLS
