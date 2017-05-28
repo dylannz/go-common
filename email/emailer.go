@@ -1,6 +1,7 @@
 package email
 
 import (
+	"net"
 	"net/smtp"
 	"sync"
 
@@ -40,7 +41,9 @@ func Send(content *Email) error {
 	once.Do(func() {
 		InitEmailer()
 	})
-	auth := smtp.PlainAuth("", Emailer.Conf.Username, Emailer.Conf.Password, Emailer.Conf.ServerHostPort)
+	host, _, _ := net.SplitHostPort(Emailer.Conf.ServerHostPort)
+
+	auth := smtp.PlainAuth("", Emailer.Conf.Username, Emailer.Conf.Password, host)
 
 	eml := &email.Email{
 		To:      []string{content.To},
