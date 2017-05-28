@@ -16,36 +16,28 @@ var (
 	Emailer       EmailSender
 )
 
-type EmailConfig struct {
+type EmailSender struct {
 	Username       string
 	Password       string
 	ServerHostPort string
 }
 
-type EmailSender struct {
-	Conf EmailConfig
-}
-
 func InitEmailer() {
 	once.Do(func() {
 		Emailer = EmailSender{
-			Conf: EmailConfig{
-				ServerHostPort: env.MustGetString("SMTP_HOST"),
-				Username:       env.MustGetString("SMTP_USER"),
-				Password:       env.MustGetString("SMTP_PASSWORD"),
-			},
+			ServerHostPort: env.MustGetString("SMTP_HOST"),
+			Username:       env.MustGetString("SMTP_USER"),
+			Password:       env.MustGetString("SMTP_PASSWORD"),
 		}
 	})
 }
 
 // Send sends a simple email via a smtp gateway using TLS
 func Send(content *Email) error {
-	once.Do(func() {
-		InitEmailer()
-	})
-	host, _, _ := net.SplitHostPort(Emailer.Conf.ServerHostPort)
+	InitEmailer()
+	host, _, _ := net.SplitHostPort(Emailer.ServerHostPort)
 
-	auth := smtp.PlainAuth("", Emailer.Conf.Username, Emailer.Conf.Password, host)
+	auth := smtp.PlainAuth("", Emailer.Username, Emailer.Password, host)
 
 	eml := &email.Email{
 		To:      []string{content.To},
@@ -60,5 +52,5 @@ func Send(content *Email) error {
 			return err
 		}
 	}
-	return eml.Send(Emailer.Conf.ServerHostPort, auth)
+	return eml.Send(Emailer.ServerHostPort, auth)
 }
