@@ -23,13 +23,14 @@ var _ = Describe("Address", func() {
 		Entry(
 			"a full set of address identifiers and street name/type",
 			Address{
+				UnitType:       "FLAT",
 				UnitIdentifier: "123",
 				StreetNumber:   5,
 				StreetAlpha:    "A",
 				StreetName:     "Cambridge",
 				StreetType:     "Terrace",
 			},
-			"123/5A Cambridge Terrace",
+			"Flat 123/5A Cambridge Terrace",
 		),
 		Entry(
 			"building name",
@@ -64,7 +65,8 @@ var _ = Describe("Address", func() {
 			"full address",
 			Address{
 				BuildingName:   "Homes House",
-				UnitIdentifier: "Unit 5",
+				UnitType:       "Unit",
+				UnitIdentifier: "5",
 				StreetNumber:   123,
 				StreetAlpha:    "B",
 				StreetName:     "CAMBRIDGE",
@@ -74,14 +76,15 @@ var _ = Describe("Address", func() {
 				City:           "WELLINGTON",
 				Postcode:       1234,
 			},
-			"UNIT 5 Homes House, 123B Cambridge Terrace, Brooklyn, RD 3A, Wellington",
+			"Unit 5 Homes House, 123B Cambridge Terrace, Brooklyn, RD 3A, Wellington",
 		),
 	)
 	Describe("DisplayWithPostcode", func() {
 		It("appends postcode to the end of the display address", func() {
 			input := Address{
 				BuildingName:   "Homes House",
-				UnitIdentifier: "Unit 5",
+				UnitType:       "UNIT",
+				UnitIdentifier: "5",
 				StreetNumber:   123,
 				StreetAlpha:    "B",
 				StreetName:     "CAMBRIDGE",
@@ -92,7 +95,7 @@ var _ = Describe("Address", func() {
 				Postcode:       1234,
 			}.DisplayWithPostcode()
 
-			expected := "UNIT 5 Homes House, 123B Cambridge Terrace, Brooklyn, RD 3A, Wellington 1234"
+			expected := "Unit 5 Homes House, 123B Cambridge Terrace, Brooklyn, RD 3A, Wellington 1234"
 
 			Expect(input).To(Equal(expected))
 		})
