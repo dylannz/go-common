@@ -8,6 +8,7 @@ import (
 // Address is a complete New Zealand address with all the required fields to
 // format into a human-readable address string.
 type Address struct {
+	UnitType        string `json:"unit_type"`
 	UnitIdentifier  string `json:"unit_identifier"`
 	StreetNumber    int    `json:"street_number"`
 	StreetAlpha     string `json:"street_alpha"`
@@ -25,17 +26,14 @@ type Address struct {
 
 // Street returns the formatted street name + type and direction
 func (a Address) Street() string {
-	return strings.Trim(
-		strings.Join(
-			[]string{
-				a.StreetName,
-				a.StreetType,
-				a.StreetDirection,
-			},
-			" ",
-		),
-		" ",
-	)
+	parts := []string{a.StreetName}
+	if a.StreetType != "" {
+		parts = append(parts, a.StreetType)
+	}
+	if a.StreetDirection != "" {
+		parts = append(parts, a.StreetDirection)
+	}
+	return strings.Trim(strings.Join(parts, " "), " ")
 }
 
 func titleCase(s string) string {
@@ -50,6 +48,9 @@ func (a Address) Display() string {
 		unitBuildingName := titleCase(a.BuildingName)
 		if a.UnitIdentifier != "" {
 			unitBuildingName = strings.ToUpper(a.UnitIdentifier) + " " + unitBuildingName
+			if a.UnitType != "" {
+				unitBuildingName = titleCase(a.UnitType) + " " + unitBuildingName
+			}
 		}
 		address = append(address, unitBuildingName)
 	}
@@ -58,6 +59,9 @@ func (a Address) Display() string {
 	street := titleCase(a.Street())
 	if a.StreetNumber != 0 {
 		if a.UnitIdentifier != "" && a.BuildingName == "" {
+			if a.UnitType != "" {
+				identifierStreet += titleCase(a.UnitType) + " "
+			}
 			identifierStreet += strings.ToUpper(a.UnitIdentifier) + "/"
 		}
 		identifierStreet += strconv.Itoa(a.StreetNumber) + strings.ToUpper(a.StreetAlpha)
