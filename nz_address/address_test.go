@@ -62,6 +62,14 @@ var _ = Describe("Address", func() {
 			"Brooklyn, Wellington",
 		),
 		Entry(
+			"street name and direction without type",
+			Address{
+				StreetName:      "State Highway 2",
+				StreetDirection: "East",
+			},
+			"State Highway 2 East",
+		),
+		Entry(
 			"full address",
 			Address{
 				BuildingName:   "Homes House",

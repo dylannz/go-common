@@ -26,17 +26,14 @@ type Address struct {
 
 // Street returns the formatted street name + type and direction
 func (a Address) Street() string {
-	return strings.Trim(
-		strings.Join(
-			[]string{
-				a.StreetName,
-				a.StreetType,
-				a.StreetDirection,
-			},
-			" ",
-		),
-		" ",
-	)
+	parts := []string{a.StreetName}
+	if a.StreetType != "" {
+		parts = append(parts, a.StreetType)
+	}
+	if a.StreetDirection != "" {
+		parts = append(parts, a.StreetDirection)
+	}
+	return strings.Trim(strings.Join(parts, " "), " ")
 }
 
 func titleCase(s string) string {
