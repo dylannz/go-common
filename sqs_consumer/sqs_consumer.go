@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"sync"
 	"time"
 
 	"github.com/Sirupsen/logrus"
@@ -121,9 +122,15 @@ func (c Consumer) receive() {
 // handled in order.
 func (c Consumer) handleResponses() {
 	for response := range c.responseChan {
+		wg := sync.WaitGroup{}
+		wg.Add(len(response.Messages))
 		for _, message := range response.Messages {
-			go c.handleMessage(message)
+			go func(message sqs.Message) {
+				defer wg.Done()
+				c.handleMessage(message)
+			}(message)
 		}
+		wg.Wait()
 	}
 }
 
