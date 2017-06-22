@@ -239,7 +239,8 @@ func (c Consumer) handleMessage(message sqs.Message) {
 		mutex := c.redsync.NewMutex(name, options...)
 		err := mutex.Lock()
 		if err != nil {
-			logger.Error(err)
+			logger.Warn("can't acquire redsync lock, refusing to handle message (duplicate?): ", err)
+			return
 		}
 
 		defer mutex.Unlock()
