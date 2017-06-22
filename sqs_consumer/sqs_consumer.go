@@ -22,9 +22,18 @@ var contextLogger = logrus.WithField("package", "sqs_consumer")
 
 const (
 	maxMessages = 10
+
 	// secondsToSleepOnError defines the number of seconds to sleep for when an
 	// error occurs while reciving SQS messages.
 	secondsToSleepOnError = 10
+
+	// redsyncPrefix is the prefix added to the redsync key (to prevent multiple
+	// processing of the same message).
+	redsyncPrefix = "sqs:message:"
+
+	// redsyncDefaultExpiry is the default duration redsync will lock a message
+	// for. Can be overridden using Consumer.RedsyncOptions().
+	redsyncDefaultExpiry = time.Second * 120
 )
 
 // MessageHandler is an anonymous function which is used to handle messages
@@ -94,6 +103,12 @@ func (c *Consumer) RedsyncOptions(options []redsync.Option) {
 		return
 	}
 	c.redsyncOptions = options
+}
+
+func (c Consumer) redsyncDefaultOptions() []redsync.Option {
+	return []redsync.Option{
+		redsync.SetExpiry(redsyncDefaultExpiry),
+	}
 }
 
 // WaitForCompletion will make the consumer wait for each batch of messages to
@@ -211,6 +226,23 @@ func (c Consumer) handleMessage(message sqs.Message) {
 		// No handler supplied, don't handle!
 		logger.Debug("no message handler supplied")
 		return
+	}
+
+	// Lock this message in redsync
+	if c.redsyncEnabled {
+		name := redsyncPrefix + message.MessageId
+		options := c.redsyncDefaultOptions()
+		if c.redsyncOptions != nil {
+			options = append(options, c.redsyncOptions...)
+		}
+
+		mutex := c.redsync.NewMutex(name, options...)
+		err := mutex.Lock()
+		if err != nil {
+			logger.Error(err)
+		}
+
+		defer mutex.Unlock()
 	}
 
 	switch handler := c.handler.(type) {
