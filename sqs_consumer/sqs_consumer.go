@@ -7,8 +7,13 @@ import (
 	"sync"
 	"time"
 
+	redsync "gopkg.in/redsync.v1"
+
+	"github.com/HomesNZ/go-common/redis"
 	"github.com/Sirupsen/logrus"
 	"github.com/goamz/goamz/sqs"
+
+	redigo "github.com/garyburd/redigo/redis"
 )
 
 // TODO: add tests
@@ -55,6 +60,12 @@ type Consumer struct {
 	responseChan chan *sqs.ReceiveMessageResponse
 	doneChan     chan bool
 	started      bool
+
+	waitForCompletion bool
+
+	redsyncEnabled bool
+	redsync        *redsync.Redsync
+	redsyncOptions []redsync.Option
 }
 
 // NewConsumer returns a pointer to a fresh Consumer instance.
@@ -66,8 +77,33 @@ func NewConsumer(conn *sqs.SQS, queueName string, handler interface{}) *Consumer
 	}
 }
 
+// RedsyncEnabled uses redsync to prevent multiple processing of the same SQS
+// message.
+func (c *Consumer) RedsyncEnabled(b bool) {
+	if c.started {
+		contextLogger.Error("RedsyncEnabled() called while consumer running")
+		return
+	}
+	c.redsyncEnabled = b
+}
+
+// RedsyncOptions sets custom options for Redsync.
+func (c *Consumer) RedsyncOptions(options []redsync.Option) {
+	if c.started {
+		contextLogger.Error("RedsyncOptions() called while consumer running")
+		return
+	}
+	c.redsyncOptions = options
+}
+
+// WaitForCompletion will make the consumer wait for each batch of messages to
+// finish processing before it requests the next batch.
+func (c *Consumer) WaitForCompletion(b bool) {
+	c.waitForCompletion = b
+}
+
 // Start attempts to initialize the long polling process.
-func (c Consumer) Start() error {
+func (c *Consumer) Start() error {
 	if c.started {
 		return errors.New("can't start sqs consumer: already started")
 	}
@@ -79,10 +115,32 @@ func (c Consumer) Start() error {
 	c.responseChan = make(chan *sqs.ReceiveMessageResponse)
 	c.doneChan = make(chan bool)
 	c.started = true
+	if c.redsyncEnabled {
+		c.initRedsync()
+	}
 	go c.receive()
 	go c.handleResponses()
 	contextLogger.Info("now polling SQS queue:", c.queueName)
 	return nil
+}
+
+// RedisPool is a redis pool wrapper for redsync
+type RedisPool struct{}
+
+// Get implements redsync.Pool
+func (r RedisPool) Get() redigo.Conn {
+	return redis.CacheConn().Conn()
+}
+
+func (c *Consumer) initRedsync() {
+	p := RedisPool{}
+	c.redsync = redsync.New(
+		[]redsync.Pool{p},
+	)
+}
+
+func (c *Consumer) terminateRedsync() {
+	c.redsync = nil
 }
 
 // recieve handles the SQS long polling process. It passes messages as it
@@ -97,6 +155,10 @@ func (c Consumer) receive() {
 			close(c.responseChan)
 			c.doneChan = nil
 			c.responseChan = nil
+
+			if c.redsyncEnabled {
+				c.terminateRedsync()
+			}
 
 			c.queue = nil
 			c.started = false
@@ -130,7 +192,9 @@ func (c Consumer) handleResponses() {
 				c.handleMessage(message)
 			}(message)
 		}
-		wg.Wait()
+		if c.waitForCompletion {
+			wg.Wait()
+		}
 	}
 }
 
@@ -142,11 +206,13 @@ func (c Consumer) handleMessage(message sqs.Message) {
 		"message_id":     message.MessageId,
 	})
 	logger.Debug("handling message...")
+
 	if c.handler == nil {
 		// No handler supplied, don't handle!
 		logger.Debug("no message handler supplied")
 		return
 	}
+
 	switch handler := c.handler.(type) {
 	case MessageHandler:
 		if !handler(message) {
