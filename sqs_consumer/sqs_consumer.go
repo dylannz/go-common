@@ -108,6 +108,7 @@ func (c *Consumer) RedsyncOptions(options []redsync.Option) {
 func (c Consumer) redsyncDefaultOptions() []redsync.Option {
 	return []redsync.Option{
 		redsync.SetExpiry(redsyncDefaultExpiry),
+		redsync.SetTries(1), // only try to lock once, then give up
 	}
 }
 
