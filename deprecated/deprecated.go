@@ -11,7 +11,7 @@ import (
 func Deprecated(next http.Handler) http.Handler {
 	contextLogger := logrus.WithField("Middleware", "Deprecated")
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		contextLogger.Info("Request recieved", r)
+		contextLogger.Info("Request recieved", r.URL.String())
 		w.Header().Set("Endpoint-Deprecated", "True")
 		next.ServeHTTP(w, r)
 	})
