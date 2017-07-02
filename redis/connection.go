@@ -24,7 +24,7 @@ var (
 	// ErrUnableToConnectToRedis is raised when a connection to redis cannot be established.
 	ErrUnableToConnectToRedis = errors.New("Unable to connect to redis")
 
-	pool redis.Pool
+	pool *redis.Pool
 
 	once sync.Once
 )
@@ -34,7 +34,7 @@ type Cache struct {
 	Pool *redis.Pool
 }
 
-//Conn returns an active connection to the cache
+// Conn returns an active connection to the cache
 func (c Cache) Conn() redis.Conn {
 	return c.Pool.Get()
 }
@@ -48,7 +48,7 @@ func CacheConn() Cache {
 	once.Do(InitConnection)
 
 	return Cache{
-		Pool: &pool,
+		Pool: pool,
 	}
 }
 
@@ -90,7 +90,7 @@ func InitConnection() {
 		log.Error(err)
 	}
 
-	pool = *redisPool
+	pool = redisPool
 }
 
 // verifyConnection pings redis to verify a connection is established. If the connection cannot be established, it will
