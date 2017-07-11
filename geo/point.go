@@ -42,7 +42,7 @@ func NewPointLongAsLon(x float64, y float64, srid int) *Point {
 // IsNull returns a boolean indicating whether the point is considered null.
 // Currently returns true when the SRID has not been set.
 func (p Point) IsNull() bool {
-	return 0 == p.SRID
+	return p.SRID == 0 || p.Lat == 0 || p.Long == 0
 }
 
 // MarshalJSON implements the json.Marshaler interface
