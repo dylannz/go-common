@@ -21,22 +21,22 @@ type Point struct {
 }
 
 // NewPoint creates and returns a new Point
-func NewPoint(x float64, y float64, srid int) (*Point, error) {
+func NewPoint(x float64, y float64, srid int) *Point {
 	return &Point{
 		Long: x,
 		Lat:  y,
 		SRID: srid,
-	}, nil
+	}
 }
 
 // NewPointLongAsLon returns a new point with marshalLongAsLon set to true
-func NewPointLongAsLon(x float64, y float64, srid int) (*Point, error) {
+func NewPointLongAsLon(x float64, y float64, srid int) *Point {
 	return &Point{
 		Long:             x,
 		Lat:              y,
 		SRID:             srid,
 		marshalLongAsLon: true,
-	}, nil
+	}
 }
 
 // IsNull returns a boolean indicating whether the point is considered null.
