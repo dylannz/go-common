@@ -8,24 +8,15 @@ type BoundingBox struct {
 }
 
 // NewBoundingBox returns a new BoundingBox from the given lat/long pairs
-func NewBoundingBox(nwLat float64, nwLon float64, seLat float64, seLon float64, srid int) (*BoundingBox, error) {
-	var bbBox BoundingBox
-	var err error
-	bbBox.SRID = srid
-
-	bbBox.NW, err = NewPoint(nwLon, nwLat, srid)
-	if err != nil {
-		return nil, err
+func NewBoundingBox(nwLat float64, nwLon float64, seLat float64, seLon float64, srid int) *BoundingBox {
+	return &BoundingBox{
+		NW:   NewPoint(nwLon, nwLat, srid),
+		SE:   NewPoint(seLon, seLat, srid),
+		SRID: srid,
 	}
-	bbBox.SE, err = NewPoint(seLon, seLat, srid)
-	if err != nil {
-		return nil, err
-	}
-
-	return &bbBox, nil
 }
 
 // Centroid calculates and returns the centroid of the bounding box
-func (bb BoundingBox) Centroid() (*Point, error) {
+func (bb BoundingBox) Centroid() *Point {
 	return CalculateCentroid([]*Point{bb.NW, bb.SE})
 }
