@@ -1,6 +1,7 @@
 package db
 
 import (
+	"database/sql/driver"
 	"fmt"
 	"regexp"
 	"strings"
@@ -51,4 +52,19 @@ func CreateStringArray(array []string) string {
 		results = append(results, strings.Replace(v, "\"", "\\\"", -1))
 	}
 	return "{\"" + strings.Join(results, "\",\"") + "\"}"
+}
+
+// PGArray is a type of string slice that is directly usable in PostgreSQL
+// queries.
+type PGArray []string
+
+// String returns the string slice as a string-representation of a Postgres
+// array.
+func (a PGArray) String() string {
+	return CreateStringArray([]string(a))
+}
+
+// Value implements database/sql/driver.Valuer.
+func (a PGArray) Value() (driver.Value, error) {
+	return a.String(), nil
 }
