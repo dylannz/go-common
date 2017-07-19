@@ -27,3 +27,9 @@ func StringFrom(str string) null.String {
 func IntFrom(i int64) null.Int {
 	return null.NewInt(i, i != 0)
 }
+
+// FloatFrom returns a new null.Float. If the supplied value is equal to 0 then
+// the float is considered to be null.
+func FloatFrom(f float64) null.Float {
+	return null.NewFloat(f, f != 0)
+}
