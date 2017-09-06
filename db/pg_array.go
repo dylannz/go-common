@@ -68,7 +68,7 @@ func (a PGArray) Value() (driver.Value, error) {
 	return a.String(), nil
 }
 
-// Value implements database/sql/driver.Valuer.
+// Scan implements database/sql.Scanner.
 func (a *PGArray) Scan(src interface{}) error {
 	var str string
 	switch t := src.(type) {
