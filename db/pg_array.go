@@ -29,8 +29,8 @@ var (
 )
 
 // ParseArray is a function that will allow you to extract an array of strings for a Postgress Array Type
-func ParseArray(array string) []string {
-	var results []string
+func ParseArray(array string) PGArray {
+	var results PGArray
 	matches := arrayExp.FindAllStringSubmatch(array, -1)
 	for _, match := range matches {
 		s := match[valueIndex]
@@ -39,11 +39,10 @@ func ParseArray(array string) []string {
 		results = append(results, s)
 	}
 	return results
-
 }
 
 // CreateStringArray is a function that will create a string formatted to be used for Postgres Array types
-func CreateStringArray(array []string) string {
+func CreateStringArray(array PGArray) string {
 	if len(array) == 0 {
 		return "{}"
 	}
@@ -67,4 +66,19 @@ func (a PGArray) String() string {
 // Value implements database/sql/driver.Valuer.
 func (a PGArray) Value() (driver.Value, error) {
 	return a.String(), nil
+}
+
+// Value implements database/sql/driver.Valuer.
+func (a *PGArray) Scan(src interface{}) error {
+	var str string
+	switch t := src.(type) {
+	case string:
+		str = t
+	case []byte:
+		str = string(t)
+	default:
+		return fmt.Errorf("null: cannot scan type %T into null.Time: %v", src, src)
+	}
+	*a = ParseArray(str)
+	return nil
 }
