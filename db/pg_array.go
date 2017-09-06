@@ -77,7 +77,7 @@ func (a *PGArray) Scan(src interface{}) error {
 	case []byte:
 		str = string(t)
 	default:
-		return fmt.Errorf("null: cannot scan type %T into null.Time: %v", src, src)
+		return fmt.Errorf("null: cannot scan type %T into db.PGArray: %v", src, src)
 	}
 	*a = ParseArray(str)
 	return nil
