@@ -15,7 +15,7 @@ var _ = Describe("Address", func() {
 			"a full set of address identifiers",
 			Address{
 				UnitIdentifier: "123",
-				StreetNumber:   5,
+				StreetNumber:   "5",
 				StreetAlpha:    "A",
 			},
 			"123/5A",
@@ -25,7 +25,7 @@ var _ = Describe("Address", func() {
 			Address{
 				UnitType:       "FLAT",
 				UnitIdentifier: "123",
-				StreetNumber:   5,
+				StreetNumber:   "5",
 				StreetAlpha:    "A",
 				StreetName:     "Cambridge",
 				StreetType:     "Terrace",
@@ -36,7 +36,7 @@ var _ = Describe("Address", func() {
 			"building name",
 			Address{
 				BuildingName: "Homes",
-				StreetNumber: 123,
+				StreetNumber: "123",
 				StreetName:   "Cambridge",
 				StreetType:   "Terrace",
 			},
@@ -45,7 +45,7 @@ var _ = Describe("Address", func() {
 		Entry(
 			"RD number",
 			Address{
-				StreetNumber: 123,
+				StreetNumber: "123",
 				StreetName:   "Cambridge",
 				StreetType:   "Terrace",
 				RDNumber:     "3c",
@@ -75,7 +75,7 @@ var _ = Describe("Address", func() {
 				BuildingName:   "Homes House",
 				UnitType:       "Unit",
 				UnitIdentifier: "5",
-				StreetNumber:   123,
+				StreetNumber:   "123",
 				StreetAlpha:    "B",
 				StreetName:     "CAMBRIDGE",
 				StreetType:     "TERRACE",
@@ -86,6 +86,15 @@ var _ = Describe("Address", func() {
 			},
 			"Unit 5 Homes House, 123B Cambridge Terrace, Brooklyn, RD 3A, Wellington",
 		),
+		Entry("hyphenated street number", Address{
+			UnitIdentifier: "4G",
+			StreetNumber:   "205-215",
+			StreetName:     "Hobson",
+			StreetType:     "Street",
+			City:           "Auckland",
+		},
+			"4G/205-215 Hobson Street, Auckland",
+		),
 	)
 	Describe("DisplayWithPostcode", func() {
 		It("appends postcode to the end of the display address", func() {
@@ -93,7 +102,7 @@ var _ = Describe("Address", func() {
 				BuildingName:   "Homes House",
 				UnitType:       "UNIT",
 				UnitIdentifier: "5",
-				StreetNumber:   123,
+				StreetNumber:   "123",
 				StreetAlpha:    "B",
 				StreetName:     "CAMBRIDGE",
 				StreetType:     "TERRACE",

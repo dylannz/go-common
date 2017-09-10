@@ -10,7 +10,7 @@ import (
 type Address struct {
 	UnitType        string `json:"unit_type"`
 	UnitIdentifier  string `json:"unit_identifier"`
-	StreetNumber    int    `json:"street_number"`
+	StreetNumber    string `json:"street_number"`
 	StreetAlpha     string `json:"street_alpha"`
 	StreetName      string `json:"street_name"`
 	StreetType      string `json:"street_type"`
@@ -57,14 +57,14 @@ func (a Address) Display() string {
 
 	var identifierStreet string
 	street := titleCase(a.Street())
-	if a.StreetNumber != 0 {
+	if a.StreetNumber != "" {
 		if a.UnitIdentifier != "" && a.BuildingName == "" {
 			if a.UnitType != "" {
 				identifierStreet += titleCase(a.UnitType) + " "
 			}
 			identifierStreet += strings.ToUpper(a.UnitIdentifier) + "/"
 		}
-		identifierStreet += strconv.Itoa(a.StreetNumber) + strings.ToUpper(a.StreetAlpha)
+		identifierStreet += a.StreetNumber + strings.ToUpper(a.StreetAlpha)
 		if street != "" {
 			identifierStreet += " "
 		}
