@@ -14,11 +14,29 @@ var _ = Describe("Address", func() {
 		Entry(
 			"a full set of address identifiers",
 			Address{
-				UnitIdentifier: "123",
-				StreetNumber:   5,
-				StreetAlpha:    "A",
+				UnitIdentifier:   "123",
+				StreetNumber:     5,
+				StreetAlpha:      "A",
+				StreetNumberHigh: 10,
 			},
-			"123/5A",
+			"123/5A-10",
+		),
+		Entry(
+			"street number range",
+			Address{
+				StreetNumber:     5,
+				StreetNumberHigh: 10,
+			},
+			"5-10",
+		),
+		Entry(
+			"street number range with unit identifier",
+			Address{
+				UnitIdentifier:   "123",
+				StreetNumber:     5,
+				StreetNumberHigh: 10,
+			},
+			"123/5-10",
 		),
 		Entry(
 			"a full set of address identifiers and street name/type",
@@ -72,19 +90,20 @@ var _ = Describe("Address", func() {
 		Entry(
 			"full address",
 			Address{
-				BuildingName:   "Homes House",
-				UnitType:       "Unit",
-				UnitIdentifier: "5",
-				StreetNumber:   123,
-				StreetAlpha:    "B",
-				StreetName:     "CAMBRIDGE",
-				StreetType:     "TERRACE",
-				RDNumber:       "3a",
-				Suburb:         "BROOKLYN",
-				City:           "WELLINGTON",
-				Postcode:       1234,
+				BuildingName:     "Homes House",
+				UnitType:         "Unit",
+				UnitIdentifier:   "5",
+				StreetNumber:     123,
+				StreetNumberHigh: 134,
+				StreetAlpha:      "B",
+				StreetName:       "CAMBRIDGE",
+				StreetType:       "TERRACE",
+				RDNumber:         "3a",
+				Suburb:           "BROOKLYN",
+				City:             "WELLINGTON",
+				Postcode:         1234,
 			},
-			"Unit 5 Homes House, 123B Cambridge Terrace, Brooklyn, RD 3A, Wellington",
+			"Unit 5 Homes House, 123B-134 Cambridge Terrace, Brooklyn, RD 3A, Wellington",
 		),
 	)
 	Describe("DisplayWithPostcode", func() {

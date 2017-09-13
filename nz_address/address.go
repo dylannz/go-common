@@ -8,15 +8,16 @@ import (
 // Address is a complete New Zealand address with all the required fields to
 // format into a human-readable address string.
 type Address struct {
-	UnitType        string `json:"unit_type"`
-	UnitIdentifier  string `json:"unit_identifier"`
-	StreetNumber    int    `json:"street_number"`
-	StreetAlpha     string `json:"street_alpha"`
-	StreetName      string `json:"street_name"`
-	StreetType      string `json:"street_type"`
-	StreetDirection string `json:"street_direction"`
-	Suburb          string `json:"suburb"`
-	City            string `json:"city"`
+	UnitType         string `json:"unit_type"`
+	UnitIdentifier   string `json:"unit_identifier"`
+	StreetNumber     int    `json:"street_number"`
+	StreetNumberHigh int    `json:"street_number_high"`
+	StreetAlpha      string `json:"street_alpha"`
+	StreetName       string `json:"street_name"`
+	StreetType       string `json:"street_type"`
+	StreetDirection  string `json:"street_direction"`
+	Suburb           string `json:"suburb"`
+	City             string `json:"city"`
 
 	BuildingName string `json:"building_name"`
 	Floor        string `json:"floor"`
@@ -65,6 +66,9 @@ func (a Address) Display() string {
 			identifierStreet += strings.ToUpper(a.UnitIdentifier) + "/"
 		}
 		identifierStreet += strconv.Itoa(a.StreetNumber) + strings.ToUpper(a.StreetAlpha)
+		if a.StreetNumberHigh != 0 {
+			identifierStreet += "-" + strconv.Itoa(a.StreetNumberHigh)
+		}
 		if street != "" {
 			identifierStreet += " "
 		}
