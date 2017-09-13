@@ -76,6 +76,8 @@ func (a *PGArray) Scan(src interface{}) error {
 		str = t
 	case []byte:
 		str = string(t)
+	case nil:
+		return nil
 	default:
 		return fmt.Errorf("null: cannot scan type %T into db.PGArray: %v", src, src)
 	}
