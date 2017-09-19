@@ -8,7 +8,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/HomesNZ/go-common/env"
+	"github.com/dylannz/go-common/env"
 
 	// SQL driver
 	_ "github.com/go-sql-driver/mysql"
