@@ -111,7 +111,7 @@ func (db PG) connectionString() string {
 	}
 
 	connString := fmt.Sprintf(
-		"mysql://%s%s@%s:%s/%s",
+		"%s%s@(%s:%s)/%s",
 		env.GetString("DB_USER", "mysql"),
 		password,
 		env.GetString("DB_HOST", "localhost"),
