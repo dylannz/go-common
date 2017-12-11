@@ -48,6 +48,36 @@ func (e ErrUnableToParseInt) Error() string {
 	)
 }
 
+// ErrUnableToParseUintWithDefault is raises when converting a environment variable to uint raises an error
+type ErrUnableToParseUintWithDefault struct {
+	key    string
+	raw    string
+	defVal uint64
+}
+
+func (e ErrUnableToParseUintWithDefault) Error() string {
+	return fmt.Sprintf(
+		"unable to parse .env variable '%s' with value '%s' as unsigned integer, setting to default '%v'",
+		e.key,
+		e.raw,
+		e.defVal,
+	)
+}
+
+// ErrUnableToParseUint is raises when converting a environment variable to uint raises an error
+type ErrUnableToParseUint struct {
+	key string
+	raw string
+}
+
+func (e ErrUnableToParseUint) Error() string {
+	return fmt.Sprintf(
+		"unable to parse .env variable '%s' with value '%s' as unsigned integer",
+		e.key,
+		e.raw,
+	)
+}
+
 // ErrUnableToParseDurationWithDefault is raises when converting a environment variable to duration raises an error.
 type ErrUnableToParseDurationWithDefault struct {
 	key    string
@@ -179,6 +209,43 @@ func MustGetInt(key string) int {
 	if err != nil {
 		log.Fatal(
 			ErrUnableToParseInt{
+				key: key,
+				raw: raw,
+			},
+		)
+	}
+	return val
+}
+
+// GetUint returns the environment variable as an unsigned integer, or the default value when undefined.
+func GetUint(key string, defVal uint64) uint64 {
+	raw := os.Getenv(key)
+	if raw == "" {
+		return defVal
+	}
+	val, err := strconv.ParseUint(key, 10, 64)
+	if err != nil {
+		log.Warn(
+			ErrUnableToParseUintWithDefault{
+				key:    key,
+				raw:    raw,
+				defVal: defVal,
+			},
+		)
+	}
+	return val
+}
+
+// MustGetUint returns the environment variable as an unsigned integer, or logs a fatal error when undefined.
+func MustGetUint(key string) uint64 {
+	raw := os.Getenv(key)
+	if raw == "" {
+		log.Fatal(ErrEnvVarNotFound(key))
+	}
+	val, err := strconv.ParseUint(key, 10, 64)
+	if err != nil {
+		log.Fatal(
+			ErrUnableToParseUint{
 				key: key,
 				raw: raw,
 			},
