@@ -223,7 +223,7 @@ func GetUint(key string, defVal uint64) uint64 {
 	if raw == "" {
 		return defVal
 	}
-	val, err := strconv.ParseUint(key, 10, 64)
+	val, err := strconv.ParseUint(raw, 10, 64)
 	if err != nil {
 		log.Warn(
 			ErrUnableToParseUintWithDefault{
@@ -242,7 +242,7 @@ func MustGetUint(key string) uint64 {
 	if raw == "" {
 		log.Fatal(ErrEnvVarNotFound(key))
 	}
-	val, err := strconv.ParseUint(key, 10, 64)
+	val, err := strconv.ParseUint(raw, 10, 64)
 	if err != nil {
 		log.Fatal(
 			ErrUnableToParseUint{
